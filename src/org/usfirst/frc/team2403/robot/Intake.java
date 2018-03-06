@@ -15,16 +15,13 @@ public class Intake {
 		
 		leftIntake = new TalonSRX(intakeLeftID);
 		rightIntake = new TalonSRX(intakeRightID);
-		clamp = new DoubleSolenoid(0, 1);
-		
-		leftIntake.set(ControlMode.Position, 0);
-		rightIntake.set(ControlMode.Position, 0);
+		clamp = new DoubleSolenoid(Constants.CLAMP_OUT, Constants.CLAMP_IN);
 		
 		leftIntake.setInverted(true);
 	}
 	
 	public void spin(double speed) {
-		leftIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED * .95);
+		leftIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 		rightIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 	}
 	

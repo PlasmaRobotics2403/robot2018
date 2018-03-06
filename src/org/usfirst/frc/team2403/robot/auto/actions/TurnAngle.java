@@ -42,6 +42,7 @@ public class TurnAngle implements Action {
 	
 	@Override
 	public boolean isFinished() {
+		SmartDashboard.putNumber("angleDiff", angleDiff);
 		SmartDashboard.putNumber("Turn Angle" , 1);
 		return Math.abs(angleDiff) < 2;
 	}
@@ -59,7 +60,7 @@ public class TurnAngle implements Action {
 
 	@Override
 	public void update() {
-		angleDiff = angle - drive.getGyroAngle();
+		angleDiff = angle + drive.getGyroAngle();
 		if(Timer.getFPGATimestamp() - fullStartTime < fullSpeedTime){
 			drive.autonTankDrive(speed, -speed);
 			DriverStation.reportWarning("forced full", false);

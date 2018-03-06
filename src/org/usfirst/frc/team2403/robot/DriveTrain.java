@@ -69,6 +69,7 @@ public class DriveTrain {
 		return toDistance(leftDrive);
 	}
 	
+
 	private static double toDistance(TalonSRX talon){
 		return talon.getSelectedSensorPosition(0) * Constants.DRIVE_ENCODER_CONVERSION;
 	}
@@ -78,6 +79,7 @@ public class DriveTrain {
 	}
 	
 	public double getGyroAngle(){
+		updateGyro();
 		return gyroAngle;
 	}
 	
@@ -87,7 +89,7 @@ public class DriveTrain {
 	
 	public void FPSDrive(PlasmaAxis forwardAxis, PlasmaAxis turnAxis){
 		
-		double forwardVal = -forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
+		double forwardVal = forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
 		double turnVal = turnAxis.getFilteredAxis() * Math.abs(turnAxis.getFilteredAxis()) * Math.abs(turnAxis.getFilteredAxis());
 		
 		FPSDrive(forwardVal, turnVal);
@@ -166,7 +168,12 @@ public class DriveTrain {
 	}
 	
 	public void gyroStraight(double speed, double angle){
-		autonTankDrive(speed - 0.01*(getGyroAngle() - angle), speed + 0.01*(getGyroAngle() - angle));
+		if(getGyroAngle() > 0) {
+			autonTankDrive(speed - 0.01*(getGyroAngle() - angle), speed - 0.01*(getGyroAngle() - angle));
+		}
+		if(getGyroAngle() < 0) {
+			autonTankDrive(speed - 0.01*(getGyroAngle() + angle), speed - 0.01*(getGyroAngle() + angle));
+		}
 	}
 	
 	public void pivotToAngle(double angle){

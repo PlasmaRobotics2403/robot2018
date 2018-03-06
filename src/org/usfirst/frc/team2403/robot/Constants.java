@@ -7,10 +7,10 @@ public class Constants {
 	
 	
 	/* TALON ID CONSTANTS */
-	public static final int L_DRIVE_ID = 2;
-	public static final int L_DRIVE_SLAVE_ID = 1;
-	public static final int R_DRIVE_ID = 4;
-	public static final int R_DRIVE_SLAVE_ID = 3;
+	public static final int L_DRIVE_ID = 1;
+	public static final int L_DRIVE_SLAVE_ID = 2;
+	public static final int R_DRIVE_ID = 3;
+	public static final int R_DRIVE_SLAVE_ID = 4;
 	public static final int ELEV_PIVOT_LEFT_ID = 5;
 	public static final int ELEV_PIVOT_RIGHT_ID = 6;
 	public static final int INTAKE_LEFT_ID = 7;
@@ -27,8 +27,22 @@ public class Constants {
 	/*ELEVATOR CONSTANTS*/
 	public static final double MAX_PIVOT_SPEED = .7;
 	public static final double MAX_LIFT_SPEED = .7;
+	public static final int PIVOT_LIMIT_ID = 0;
+	public static final int LIFT_LIMIT_ID = 1;
+	public static final double PIVOT_RAMP_RATE = .01;
+	public static final double LIFT_RAMP_RATE = .02;
+	public static final double LIFT_ENCODER_CONVERSION = 0.001433178;
+	public static final double PIVOT_ENCODER_CONVERSION = 0.0462249614;
 	
 	/*INTAKE CONSTANTS*/
-	public static final double MAX_INTAKE_SPEED = .8;
+	public static final double MAX_INTAKE_SPEED = .85;
 	
+	/*PNEUMATIC CONSTANTS*/
+	public static final int CLAMP_OUT = 0;
+	public static final int CLAMP_IN = 1;
+	public static final int PIVOT_OUT = 2;
+	public static final int PIVOT_IN = 3;
+	public static final int LIFT_OUT = 4;
+	public static final int LIFT_IN = 5;
+	public static final int ELEVATOR = 8;
 }

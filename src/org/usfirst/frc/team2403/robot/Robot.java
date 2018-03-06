@@ -53,7 +53,9 @@ public class Robot extends IterativeRobot {
 		elevator = new Elevator(Constants.ELEV_PIVOT_LEFT_ID,
 								Constants.ELEV_PIVOT_RIGHT_ID,
 								Constants.ELEV_LIFT_LEFT,
-								Constants.ELEV_LIFT_RIGHT);
+								Constants.ELEV_LIFT_RIGHT,
+								Constants.PIVOT_LIMIT_ID,
+								Constants.LIFT_LIMIT_ID);
 		
 		compressor = new Compressor(0);
 		
@@ -71,6 +73,8 @@ public class Robot extends IterativeRobot {
 		//m_chooser.addDefault("Default Auto", kDefaultAuto);
 		//m_chooser.addObject("My Auto", kCustomAuto);
 		//SmartDashboard.putData("Auto choices", m_chooser);
+		
+		driveTrain.resetEncoders();
 	}
 	
 	public void robotPeriodic() {
@@ -78,6 +82,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void disabledInit() {
+		compressor.start();
 		autoModeRunner.stop();
 		intake.clamp();
 	}
@@ -88,12 +93,16 @@ public class Robot extends IterativeRobot {
 		
 	@Override
 	public void autonomousInit() {
+		driveTrain.resetEncoders();
+		compressor.start();
+		driveTrain.zeroGyro();
 		
 		autoModes[0] = new CrossBaseline(driveTrain);
 		autoModes[1] = new SwitchRight(driveTrain, intake);
+		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
-		autoModeRunner.chooseAutoMode(autoModes[1]);  //autoModeSelection]);
+		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]); /*(autoModes[1]);*/
 		autoModeRunner.start();
 		
 		//m_autoSelected = m_chooser.getSelected();
@@ -131,7 +140,7 @@ public class Robot extends IterativeRobot {
 	public void driver1Controls(PlasmaJoystick joy) {
 
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
-		elevator.PivotRotate(joystick.LT, joystick.RT);
+		elevator.pivotRotate(joystick.RT, joystick.LT);
 		if(joystick.LB.isPressed()) {
 			intake.in(1);
 		}
@@ -150,11 +159,9 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(joystick.Y.isPressed()) {
-			elevator.releaseLiftBrake();
 			elevator.extend(1);
 		}
 		else if(joystick.A.isPressed()) {
-			elevator.releaseLiftBrake();
 			elevator.retract(1);
 		}
 		else {
