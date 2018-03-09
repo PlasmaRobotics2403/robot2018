@@ -11,10 +11,10 @@ public class Constants {
 	public static final int L_DRIVE_SLAVE_ID = 2;
 	public static final int R_DRIVE_ID = 3;
 	public static final int R_DRIVE_SLAVE_ID = 4;
-	public static final int ELEV_PIVOT_LEFT_ID = 5;
-	public static final int ELEV_PIVOT_RIGHT_ID = 6;
-	public static final int INTAKE_LEFT_ID = 7;
-	public static final int INTAKE_RIGHT_ID = 8;
+	public static final int INTAKE_LEFT_ID = 5;
+	public static final int INTAKE_RIGHT_ID = 6;
+	public static final int ELEV_PIVOT_LEFT_ID = 7;
+	public static final int ELEV_PIVOT_RIGHT_ID = 8;
 	public static final int ELEV_LIFT_LEFT = 9;
 	public static final int ELEV_LIFT_RIGHT = 10;	
 	
@@ -32,7 +32,7 @@ public class Constants {
 	public static final double PIVOT_RAMP_RATE = .01;
 	public static final double LIFT_RAMP_RATE = .02;
 	public static final double LIFT_ENCODER_CONVERSION = 0.001433178;
-	public static final double PIVOT_ENCODER_CONVERSION = 0.0462249614;
+	public static final double PIVOT_ENCODER_CONVERSION = -0.0462249614;
 	
 	/*INTAKE CONSTANTS*/
 	public static final double MAX_INTAKE_SPEED = .85;
@@ -44,5 +44,6 @@ public class Constants {
 	public static final int PIVOT_IN = 3;
 	public static final int LIFT_OUT = 4;
 	public static final int LIFT_IN = 5;
-	public static final int ELEVATOR = 8;
+	public static final int HELP_EXTEND = 6;
+	public static final int HELP_RETRACT = 7;
 }

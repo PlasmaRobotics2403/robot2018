@@ -109,8 +109,8 @@ public class DriveTrain {
 		double speedR;
 		
 		if(turnVal == 0){ //Straight forward
-			speedL = forwardVal;
-			speedR = forwardVal;
+			speedL = -forwardVal;
+			speedR = -forwardVal;
 		}
 		else if(forwardVal == 0){ //Pivot turn
 			speedL = -turnVal;

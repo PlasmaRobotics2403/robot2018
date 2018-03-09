@@ -140,7 +140,8 @@ public class Robot extends IterativeRobot {
 	public void driver1Controls(PlasmaJoystick joy) {
 
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
-		elevator.pivotRotate(joystick.RT, joystick.LT);
+		elevator.pivotRotate(joystick.LT, joystick.RT);
+		
 		if(joystick.LB.isPressed()) {
 			intake.in(1);
 		}

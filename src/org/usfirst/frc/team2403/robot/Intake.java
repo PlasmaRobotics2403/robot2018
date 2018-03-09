@@ -26,11 +26,11 @@ public class Intake {
 	}
 	
 	public void in(double speed) {
-		spin(-speed);
+		spin(speed);
 	}
 	
 	public void out(double speed) {
-		spin(speed);
+		spin(-speed);
 	}
 	
 	public void spinRight(double speed) {

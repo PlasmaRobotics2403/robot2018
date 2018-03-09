@@ -4,7 +4,6 @@ package org.usfirst.frc.team2403.robot.auto.modes;
 import org.usfirst.frc.team2403.robot.DriveTrain;
 import org.usfirst.frc.team2403.robot.Intake;
 import org.usfirst.frc.team2403.robot.auto.actions.DriveStraight;
-import org.usfirst.frc.team2403.robot.auto.actions.Pause;
 import org.usfirst.frc.team2403.robot.auto.actions.ReleaseCube;
 import org.usfirst.frc.team2403.robot.auto.actions.TurnAngle;
 import org.usfirst.frc.team2403.robot.auto.util.AutoMode;
@@ -37,7 +36,6 @@ public class SwitchRight extends AutoMode{
 		else {		
 			runAction(new DriveStraight(.4, 105, drive));
 			runAction(new TurnAngle(.3, 75, drive));
-			runAction(new Pause(10));
 			runAction(new ReleaseCube(-1, intake));
 		}
 	}
