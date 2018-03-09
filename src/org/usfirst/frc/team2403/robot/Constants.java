@@ -24,6 +24,7 @@ public class Constants {
 	public static final double MAX_DRIVE_TURN = 1;	
 	public static final double DRIVE_ENCODER_CONVERSION = -0.0048334959;
 	
+	
 	/*ELEVATOR CONSTANTS*/
 	public static final double MAX_PIVOT_SPEED = .7;
 	public static final double MAX_LIFT_SPEED = .7;

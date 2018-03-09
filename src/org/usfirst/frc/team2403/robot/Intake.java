@@ -20,6 +20,7 @@ public class Intake {
 		leftIntake.setInverted(true);
 	}
 	
+	
 	public void spin(double speed) {
 		leftIntake.set(ControlMode.Current, .5);
 		rightIntake.set(ControlMode.Current, .5);

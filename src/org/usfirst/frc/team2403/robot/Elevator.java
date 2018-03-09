@@ -200,6 +200,7 @@ public class Elevator {
 		liftBrake.set(DoubleSolenoid.Value.kReverse);
 	}
 	
+	
 	public void releaseLiftBrake() {
 		liftBrake.set(DoubleSolenoid.Value.kForward);
 	}

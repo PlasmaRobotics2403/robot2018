@@ -65,6 +65,7 @@ public class DriveTrain {
 		return (toDistance(rightDrive) + toDistance(leftDrive))/2;
 	}
 	
+	
 	public double getLeftDistance(){
 		return toDistance(leftDrive);
 	}
