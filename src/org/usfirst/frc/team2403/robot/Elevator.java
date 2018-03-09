@@ -42,9 +42,11 @@ public class Elevator {
 		liftLimit = new DigitalInput(liftLimID);
 		
 		leftLift.set(ControlMode.PercentOutput, 0);
+		leftLift.set(ControlMode.Current, .5);
 		rightLift.set(ControlMode.Follower, leftLift.getDeviceID());
 		
 		leftPivot.set(ControlMode.PercentOutput, 0);
+		leftPivot.set(ControlMode.Current, .5);
 		rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
 		
 		rightPivot.setInverted(true);
@@ -135,7 +137,7 @@ public class Elevator {
 			return 20;
 		}
 		else {
-			return 27;
+			return 30;
 		}
 		
 	}

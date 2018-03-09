@@ -21,6 +21,8 @@ public class Intake {
 	}
 	
 	public void spin(double speed) {
+		leftIntake.set(ControlMode.Current, .5);
+		rightIntake.set(ControlMode.Current, .5);
 		leftIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 		rightIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 	}

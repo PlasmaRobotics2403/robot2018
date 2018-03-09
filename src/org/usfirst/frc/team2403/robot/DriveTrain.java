@@ -33,8 +33,8 @@ public class DriveTrain {
 		
 		timer = 0;
 				
-		leftDriveSlave.set(ControlMode.Follower, leftDrive.getDeviceID());
-		rightDriveSlave.set(ControlMode.Follower, rightDrive.getDeviceID());
+		leftDriveSlave.set(ControlMode.Position, 0);
+		rightDriveSlave.set(ControlMode.Position, 0);
 		
 		leftDrive.set(ControlMode.Position, 0);
 		rightDrive.set(ControlMode.Position, 0);
@@ -89,7 +89,7 @@ public class DriveTrain {
 	
 	public void FPSDrive(PlasmaAxis forwardAxis, PlasmaAxis turnAxis){
 		
-		double forwardVal = forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
+		double forwardVal = (-1) *forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
 		double turnVal = turnAxis.getFilteredAxis() * Math.abs(turnAxis.getFilteredAxis()) * Math.abs(turnAxis.getFilteredAxis());
 		
 		FPSDrive(forwardVal, turnVal);
@@ -109,8 +109,8 @@ public class DriveTrain {
 		double speedR;
 		
 		if(turnVal == 0){ //Straight forward
-			speedL = -forwardVal;
-			speedR = -forwardVal;
+			speedL = forwardVal;
+			speedR = forwardVal;
 		}
 		else if(forwardVal == 0){ //Pivot turn
 			speedL = -turnVal;
@@ -141,8 +141,15 @@ public class DriveTrain {
 		speedL *= Constants.MAX_DRIVE_SPEED;
 		speedR *= Constants.MAX_DRIVE_SPEED;
 		
+		leftDrive.set(ControlMode.Current, .5);
+		rightDrive.set(ControlMode.Current, .5);
+		leftDriveSlave.set(ControlMode.Current, .5);
+		rightDriveSlave.set(ControlMode.Current, .5);
+		
 		leftDrive.set(ControlMode.PercentOutput, speedL/3);
 		rightDrive.set(ControlMode.PercentOutput, speedR/3);
+		leftDriveSlave.set(ControlMode.PercentOutput, speedL/3);
+		rightDriveSlave.set(ControlMode.PercentOutput,speedR/3);
 		timer = 0;
 		
 		while(timer < 10) {
@@ -151,7 +158,16 @@ public class DriveTrain {
 		
 		leftDrive.set(ControlMode.PercentOutput, speedL);
 		rightDrive.set(ControlMode.PercentOutput, speedR);
+		leftDriveSlave.set(ControlMode.PercentOutput,speedL);
+		rightDriveSlave.set(ControlMode.PercentOutput, speedR);
 		
+	}
+	
+	public void spinMotor(double speed) {
+		leftDrive.set(ControlMode.PercentOutput, speed);
+		rightDrive.set(ControlMode.PercentOutput, speed);
+		leftDriveSlave.set(ControlMode.PercentOutput, speed);
+		rightDriveSlave.set(ControlMode.PercentOutput, speed);
 	}
 	
 	public void autonTankDrive(double left, double right){
@@ -161,18 +177,23 @@ public class DriveTrain {
 	
 	public void leftWheelDrive(double speed){
 		leftDrive.set(ControlMode.PercentOutput ,speed * Constants.MAX_AUTO_DRIVE_SPEED);
+		leftDriveSlave.set(ControlMode.PercentOutput ,speed * Constants.MAX_AUTO_DRIVE_SPEED);
 	}
 	
 	public void rightWheelDrive(double speed){
 		rightDrive.set(ControlMode.PercentOutput ,speed * Constants.MAX_AUTO_DRIVE_SPEED);
+		rightDriveSlave.set(ControlMode.PercentOutput ,speed * Constants.MAX_AUTO_DRIVE_SPEED);
 	}
 	
 	public void gyroStraight(double speed, double angle){
 		if(getGyroAngle() > 0) {
 			autonTankDrive(speed - 0.01*(getGyroAngle() - angle), speed - 0.01*(getGyroAngle() - angle));
 		}
-		if(getGyroAngle() < 0) {
+		else if(getGyroAngle() < 0) {
 			autonTankDrive(speed - 0.01*(getGyroAngle() + angle), speed - 0.01*(getGyroAngle() + angle));
+		}
+		else {
+			autonTankDrive(speed - 0.01*(getGyroAngle() + angle), speed - 0.01*(getGyroAngle()+ angle));
 		}
 	}
 	

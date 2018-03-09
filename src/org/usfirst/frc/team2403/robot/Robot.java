@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
 		compressor.setClosedLoopControl(true);
 		
 		autoModeRunner = new AutoModeRunner();
-		autoModes = new AutoMode[2];
+		autoModes = new AutoMode[3];
 		for(int i = 0; i < autoModes.length; i++){
 			autoModes[i] = new Nothing();
 		}
@@ -99,6 +99,7 @@ public class Robot extends IterativeRobot {
 		
 		autoModes[0] = new CrossBaseline(driveTrain);
 		autoModes[1] = new SwitchRight(driveTrain, intake);
+		autoModes[2] = new SwitchLeft(driveTrain, intake);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
@@ -134,6 +135,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		driver1Controls(joystick);
+		driveTrain.getDistance();
 	}
 
 	
@@ -179,6 +181,13 @@ public class Robot extends IterativeRobot {
 		}
 		else {
 			
+		}
+		
+		if(joystick.START.isOffToOn()) {
+			compressor.start();
+		}
+		if(joystick.START.isOnToOff()) {
+			compressor.stop();
 		}
 	}
 	
