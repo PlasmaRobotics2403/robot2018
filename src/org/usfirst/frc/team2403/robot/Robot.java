@@ -103,7 +103,7 @@ public class Robot extends IterativeRobot {
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
-		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]); /*(autoModes[1]);*/
+		autoModeRunner.chooseAutoMode(autoModes[0]);  //autoModes[autoModeSelection]);
 		autoModeRunner.start();
 		
 		//m_autoSelected = m_chooser.getSelected();
@@ -181,13 +181,6 @@ public class Robot extends IterativeRobot {
 		}
 		else {
 			
-		}
-		
-		if(joystick.START.isOffToOn()) {
-			compressor.start();
-		}
-		if(joystick.START.isOnToOff()) {
-			compressor.stop();
 		}
 	}
 	

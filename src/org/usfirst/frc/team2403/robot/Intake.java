@@ -22,8 +22,6 @@ public class Intake {
 	
 	
 	public void spin(double speed) {
-		leftIntake.set(ControlMode.Current, .5);
-		rightIntake.set(ControlMode.Current, .5);
 		leftIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 		rightIntake.set(ControlMode.PercentOutput, speed * Constants.MAX_INTAKE_SPEED);
 	}
@@ -45,11 +43,11 @@ public class Intake {
 	}
 	
 	public void release() {
-		clamp.set(DoubleSolenoid.Value.kReverse);
+		clamp.set(DoubleSolenoid.Value.kForward);
 
 	}
 	public void clamp() {
-		clamp.set(DoubleSolenoid.Value.kForward);
+		clamp.set(DoubleSolenoid.Value.kReverse);
 
 	}
 }

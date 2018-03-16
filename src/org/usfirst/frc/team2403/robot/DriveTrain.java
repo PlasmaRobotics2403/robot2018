@@ -32,12 +32,16 @@ public class DriveTrain {
 		rightDriveSlave = new TalonSRX(rightSID);
 		
 		timer = 0;
-				
+		
+		leftDrive.set(ControlMode.Position, 0);
+		rightDrive.set(ControlMode.Position, 0);		
 		leftDriveSlave.set(ControlMode.Position, 0);
 		rightDriveSlave.set(ControlMode.Position, 0);
 		
-		leftDrive.set(ControlMode.Position, 0);
-		rightDrive.set(ControlMode.Position, 0);
+		limitCurrent(leftDrive);
+		limitCurrent(rightDrive);
+		limitCurrent(leftDriveSlave);
+		limitCurrent(rightDriveSlave);
 		
 		leftDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -142,11 +146,6 @@ public class DriveTrain {
 		speedL *= Constants.MAX_DRIVE_SPEED;
 		speedR *= Constants.MAX_DRIVE_SPEED;
 		
-		leftDrive.set(ControlMode.Current, .5);
-		rightDrive.set(ControlMode.Current, .5);
-		leftDriveSlave.set(ControlMode.Current, .5);
-		rightDriveSlave.set(ControlMode.Current, .5);
-		
 		leftDrive.set(ControlMode.PercentOutput, speedL/3);
 		rightDrive.set(ControlMode.PercentOutput, speedR/3);
 		leftDriveSlave.set(ControlMode.PercentOutput, speedL/3);
@@ -162,6 +161,13 @@ public class DriveTrain {
 		leftDriveSlave.set(ControlMode.PercentOutput,speedL);
 		rightDriveSlave.set(ControlMode.PercentOutput, speedR);
 		
+	}
+	
+	public void limitCurrent(TalonSRX talon) {
+		talon.configPeakCurrentDuration(0, 1000);
+		talon.configPeakCurrentLimit(25, 1000);
+		talon.configContinuousCurrentLimit(25, 1000);
+		talon.enableCurrentLimit(true);
 	}
 	
 	public void spinMotor(double speed) {

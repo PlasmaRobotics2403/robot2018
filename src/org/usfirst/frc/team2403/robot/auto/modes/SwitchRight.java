@@ -27,17 +27,18 @@ public class SwitchRight extends AutoMode{
 	@Override
 	protected void routine() throws AutoModeEndedException {		
 		if(gameData.charAt(0) == 'L') {
-			runAction(new DriveStraight(.4, 176, drive));
-			runAction(new TurnAngle(.2, 90, drive));
-			runAction(new DriveStraight(.3, 150, drive));
-			runAction (new TurnAngle(.3, 45, drive));
-			runAction(new ReleaseCube(-1, intake));
+			runAction(new DriveStraight(.6, 150, drive));
+			runAction(new TurnAngle(.9, 90, drive));
+			runAction(new DriveStraight(.6, 150, drive));
+			runAction (new TurnAngle(.9, 90, drive));
+			runAction(new DriveStraight(.6, 30, drive));
+			runAction(new ReleaseCube(.75, intake));
 		} 
-		else {		
-			runAction(new DriveStraight(.4, 105, drive));
-			runAction(new TurnAngle(.3, 75, drive));
-			runAction(new ReleaseCube(-1, intake));
+		else {
+			runAction(new DriveStraight(.6, 100, drive));
+			runAction(new TurnAngle(.9, 90, drive));
+			runAction(new DriveStraight(.6, 7, drive)); 
+			runAction(new ReleaseCube(.75, intake));
 		}
-	}
-	
+	} 
 }

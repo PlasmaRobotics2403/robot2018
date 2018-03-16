@@ -42,12 +42,13 @@ public class Elevator {
 		liftLimit = new DigitalInput(liftLimID);
 		
 		leftLift.set(ControlMode.PercentOutput, 0);
-		leftLift.set(ControlMode.Current, .5);
 		rightLift.set(ControlMode.Follower, leftLift.getDeviceID());
 		
 		leftPivot.set(ControlMode.PercentOutput, 0);
-		leftPivot.set(ControlMode.Current, .5);
 		rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
+		
+		limitCurrent(leftPivot);
+		limitCurrent(rightPivot);
 		
 		rightPivot.setInverted(true);
 		
@@ -114,7 +115,7 @@ public class Elevator {
 	}
 	
 	public void reportPivotData() {
-		SmartDashboard.putNumber("Pivot enc", leftPivot.getSelectedSensorPosition(0) * Constants.PIVOT_ENCODER_CONVERSION);
+		SmartDashboard.putNumber("Pivot angle", leftPivot.getSelectedSensorPosition(0) * Constants.PIVOT_ENCODER_CONVERSION);
 	}
 	
 	
@@ -127,17 +128,17 @@ public class Elevator {
 	}
 	
 	public double getLiftLimit() {
-		if(getPivotAngle() < 65) {
+		if(getPivotAngle() < 40) {
 			return 0;
 		}
-		else if(getPivotAngle() < 75) {
+		else if(getPivotAngle() < 65) {
 			return 10;
 		}
-		if(getPivotAngle() < 85) {
+		if(getPivotAngle() < 75) {
 			return 20;
 		}
 		else {
-			return 30;
+			return 28;
 		}
 		
 	}
@@ -151,7 +152,7 @@ public class Elevator {
 			leftLift.setSelectedSensorPosition(0, 0, 0);
 		}
 		
-		else if(speed > 0 && getLiftDistance() > getLiftLimit()) {
+		else if(speed > 0 && getLiftLimit() + 1 < getLiftDistance()) {
 			liftSpeed = 0;
 			activateLiftBrake();
 		}
@@ -178,6 +179,13 @@ public class Elevator {
 				
 		leftLift.set(ControlMode.PercentOutput, liftSpeed);
 		SmartDashboard.putNumber("Lift enc", leftLift.getSelectedSensorPosition(0) * Constants.LIFT_ENCODER_CONVERSION);
+	}
+	
+	public void limitCurrent(TalonSRX talon) {
+		talon.configPeakCurrentDuration(0, 1000);
+		talon.configPeakCurrentLimit(25, 1000);
+		talon.configContinuousCurrentLimit(25, 1000);
+		talon.enableCurrentLimit(true);
 	}
 	
 	public void extend(double speed) {

@@ -44,6 +44,7 @@ public class TurnAngle implements Action {
 	public boolean isFinished() {
 		SmartDashboard.putNumber("angleDiff", angleDiff);
 		SmartDashboard.putNumber("Turn Angle" , 1);
+		SmartDashboard.putNumber("gyro", drive.getGyroAngle());
 		return Math.abs(angleDiff) < 2;
 	}
 
@@ -52,7 +53,8 @@ public class TurnAngle implements Action {
 		drive.resetEncoders();
 		while(Math.abs(drive.getDistance()) > 1){
 			drive.resetEncoders();
-		}
+			DriverStation.reportWarning("broke", false);
+			}
 		drive.zeroGyro();
 		angleDiff = angle;
 		fullStartTime = Timer.getFPGATimestamp();

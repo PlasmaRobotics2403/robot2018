@@ -6,7 +6,7 @@ package org.usfirst.frc.team2403.robot.auto.actions;
 import org.usfirst.frc.team2403.robot.DriveTrain;
 import org.usfirst.frc.team2403.robot.auto.util.Action;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 /**
  *
  */
@@ -29,7 +29,7 @@ public class DriveStraight implements Action {
 	
 	@Override
 	public boolean isFinished() {
-		SmartDashboard.putNumber("Drive Straight", 1);
+		DriverStation.reportWarning("finished", false);
 		return Math.abs(drive.getDistance()) >= distance;
 	}
 
@@ -45,7 +45,7 @@ public class DriveStraight implements Action {
 
 	@Override
 	public void update() {
-		drive.gyroStraight(speed, 1);
+		drive.gyroStraight(speed, 0);
 	}
 
 	@Override
