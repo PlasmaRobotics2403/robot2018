@@ -21,7 +21,7 @@ public class CrossBaseline extends AutoMode {
 	
 	@Override
 	protected void routine() throws AutoModeEndedException {
-		runAction(new DriveStraight(.4, 150, drive));
+		runAction(new DriveStraight(.6, 150, drive));
 
 	}
 

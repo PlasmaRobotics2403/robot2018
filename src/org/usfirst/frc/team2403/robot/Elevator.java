@@ -53,11 +53,25 @@ public class Elevator {
 		rightPivot.setInverted(true);
 		
 		leftPivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		rightPivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftLift.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		leftLift.setSensorPhase(true);
+		
 		leftPivot.setSensorPhase(true);
+		rightPivot.setSensorPhase(true);
+		leftLift.setSensorPhase(true);
 		pivotSpeed = 0;
 		liftSpeed = 0;
+		
+		/*change to rightPivot for Competition*/
+		rightPivot.selectProfileSlot(0, 0);
+		rightPivot.config_kF(0, 3, 10);
+		rightPivot.config_kP(0, 1.5, 10);
+		rightPivot.config_kI(0, .0005, 10);
+		rightPivot.config_kD(0, 100, 10);
+		rightPivot.config_IntegralZone(0, 0, 10);
+		
+		rightPivot.configMotionCruiseVelocity(200, 10);
+		rightPivot.configMotionAcceleration(150, 10);
 	}
 	
 
@@ -84,10 +98,11 @@ public class Elevator {
 		if(speed >= 0 && !pivotLimit.get()) {
 			pivotSpeed = 0;
 			leftPivot.setSelectedSensorPosition(0, 0, 0);
+			rightPivot.setSelectedSensorPosition(0, 0, 0);
 			activatePivotBrake();
 			disengagePivotHelper();
 		}
-		else if(speed < 0 && getLiftLimit() + 1 < getLiftDistance()) {
+		else if(speed > 0 && getLiftLimit() + 1 < getLiftDistance()) {
 			pivotSpeed = 0;
 			activatePivotBrake();
 		}
@@ -111,16 +126,24 @@ public class Elevator {
 		}
 				
 		leftPivot.set(ControlMode.PercentOutput, pivotSpeed);
-
+		SmartDashboard.putNumber("pivot speed", pivotSpeed);
 	}
 	
 	public void reportPivotData() {
-		SmartDashboard.putNumber("Pivot angle", leftPivot.getSelectedSensorPosition(0) * Constants.PIVOT_ENCODER_CONVERSION);
+		SmartDashboard.putNumber("Pivot angle", (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0)) * Constants.PIVOT_ENCODER_CONVERSION);
+		SmartDashboard.putNumber("Encoder Position", rightPivot.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Encoder Velocity", rightPivot.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("pivot Error", rightPivot.getClosedLoopError(0));
+	}
+	
+	public void pivotMotionMagic(double position) {
+		leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
+		rightPivot.set(ControlMode.MotionMagic, position);
 	}
 	
 	
 	public double getPivotAngle() {
-		return leftPivot.getSelectedSensorPosition(0) * Constants.PIVOT_ENCODER_CONVERSION;
+		return (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0))  * Constants.PIVOT_ENCODER_CONVERSION;
 	}
 	
 	public double getLiftDistance() {
@@ -128,13 +151,13 @@ public class Elevator {
 	}
 	
 	public double getLiftLimit() {
-		if(getPivotAngle() < 40) {
+		if(getPivotAngle() < 50) {
 			return 0;
 		}
-		else if(getPivotAngle() < 65) {
+		else if(getPivotAngle() < 75) {
 			return 10;
 		}
-		if(getPivotAngle() < 75) {
+		if(getPivotAngle() < 85) {
 			return 20;
 		}
 		else {
@@ -152,7 +175,7 @@ public class Elevator {
 			leftLift.setSelectedSensorPosition(0, 0, 0);
 		}
 		
-		else if(speed > 0 && getLiftLimit() + 1 < getLiftDistance()) {
+		else if(speed > 0 && getLiftLimit() + .5 < getLiftDistance()) {
 			liftSpeed = 0;
 			activateLiftBrake();
 		}

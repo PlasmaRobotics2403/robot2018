@@ -18,10 +18,10 @@ public class DriveStraight implements Action {
 	
 	public DriveStraight(double speed, double distance, DriveTrain drive){
 		if(speed >= 0 && distance >=0){
-			this.speed = -Math.abs(speed);
+			this.speed = Math.abs(speed);
 		}
 		else{
-			this.speed = Math.abs(speed);
+			this.speed = -Math.abs(speed);
 		}
 		this.distance = Math.abs(distance);
 		this.drive = drive;

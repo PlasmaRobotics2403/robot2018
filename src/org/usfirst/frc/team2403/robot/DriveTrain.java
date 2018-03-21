@@ -19,7 +19,6 @@ public class DriveTrain {
 	private TalonSRX leftDriveSlave;
 	private TalonSRX rightDrive;
 	private TalonSRX rightDriveSlave;
-	private int timer;
 	
 	private AHRS navX;
 	private double gyroAngle;
@@ -30,8 +29,6 @@ public class DriveTrain {
 		leftDriveSlave = new TalonSRX(leftSID);
 		rightDrive = new TalonSRX(rightID);
 		rightDriveSlave = new TalonSRX(rightSID);
-		
-		timer = 0;
 		
 		leftDrive.set(ControlMode.Position, 0);
 		rightDrive.set(ControlMode.Position, 0);		
@@ -50,6 +47,7 @@ public class DriveTrain {
 		leftDriveSlave.setInverted(true);
 		
 		navX = new AHRS(SPI.Port.kMXP);
+		
 		
 	}
 	
@@ -94,7 +92,7 @@ public class DriveTrain {
 	
 	public void FPSDrive(PlasmaAxis forwardAxis, PlasmaAxis turnAxis){
 		
-		double forwardVal = (-1) *forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
+		double forwardVal = forwardAxis.getFilteredAxis() * Math.abs(forwardAxis.getFilteredAxis());
 		double turnVal = turnAxis.getFilteredAxis() * Math.abs(turnAxis.getFilteredAxis()) * Math.abs(turnAxis.getFilteredAxis());
 		
 		FPSDrive(forwardVal, turnVal);
@@ -146,16 +144,6 @@ public class DriveTrain {
 		speedL *= Constants.MAX_DRIVE_SPEED;
 		speedR *= Constants.MAX_DRIVE_SPEED;
 		
-		leftDrive.set(ControlMode.PercentOutput, speedL/3);
-		rightDrive.set(ControlMode.PercentOutput, speedR/3);
-		leftDriveSlave.set(ControlMode.PercentOutput, speedL/3);
-		rightDriveSlave.set(ControlMode.PercentOutput,speedR/3);
-		timer = 0;
-		
-		while(timer < 10) {
-			timer++;
-		}
-		
 		leftDrive.set(ControlMode.PercentOutput, speedL);
 		rightDrive.set(ControlMode.PercentOutput, speedR);
 		leftDriveSlave.set(ControlMode.PercentOutput,speedL);
@@ -168,13 +156,6 @@ public class DriveTrain {
 		talon.configPeakCurrentLimit(25, 1000);
 		talon.configContinuousCurrentLimit(25, 1000);
 		talon.enableCurrentLimit(true);
-	}
-	
-	public void spinMotor(double speed) {
-		leftDrive.set(ControlMode.PercentOutput, speed);
-		rightDrive.set(ControlMode.PercentOutput, speed);
-		leftDriveSlave.set(ControlMode.PercentOutput, speed);
-		rightDriveSlave.set(ControlMode.PercentOutput, speed);
 	}
 	
 	public void autonTankDrive(double left, double right){

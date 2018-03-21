@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
 		compressor.setClosedLoopControl(true);
 		
 		autoModeRunner = new AutoModeRunner();
-		autoModes = new AutoMode[3];
+		autoModes = new AutoMode[4];
 		for(int i = 0; i < autoModes.length; i++){
 			autoModes[i] = new Nothing();
 		}
@@ -100,10 +100,11 @@ public class Robot extends IterativeRobot {
 		autoModes[0] = new CrossBaseline(driveTrain);
 		autoModes[1] = new SwitchRight(driveTrain, intake);
 		autoModes[2] = new SwitchLeft(driveTrain, intake);
+		autoModes[3] = new SwitchCenter(driveTrain, intake);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
-		autoModeRunner.chooseAutoMode(autoModes[0]);  //autoModes[autoModeSelection]);
+		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
 		autoModeRunner.start();
 		
 		//m_autoSelected = m_chooser.getSelected();
@@ -142,7 +143,20 @@ public class Robot extends IterativeRobot {
 	public void driver1Controls(PlasmaJoystick joy) {
 
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
-		elevator.pivotRotate(joystick.LT, joystick.RT);
+//		elevator.pivotRotate(joystick.RT, joystick.LT);
+		
+		
+		
+		
+		if(joystick.RT.isPressed()) {
+			elevator.pivotMotionMagic(-1500);
+		}
+		else {
+			elevator.pivotMotionMagic(-200);
+		}
+		
+		
+		
 		
 		if(joystick.LB.isPressed()) {
 			intake.in(1);
