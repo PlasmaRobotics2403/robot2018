@@ -10,6 +10,7 @@ public class PlasmaButton {
 	private DriverStation driveStation;
 	
 	private boolean isHeld = false;
+	private boolean isToggled = false;
 	
 	/**
 	 * Contructor for the button class
@@ -70,6 +71,13 @@ public class PlasmaButton {
 			isHeld = isPressed();
 			return false;
 		}
+	}
+	
+	public boolean isToggled() {
+		if(isOffToOn()) {
+			isToggled = !isToggled;
+		}
+		return isToggled;
 	}
 	
 

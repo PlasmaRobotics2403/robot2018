@@ -127,11 +127,11 @@ public class DriveTrain {
 			speedL = forwardVal;
 			speedR = (absForward - absTurn < 0) ? 0 : absForward - absTurn;
 		}
-		else if(forwardSign == -1 && turnSign == 1){ //Backward right
+		else if(forwardSign == -1 && turnSign == -1){ //Backward right
 			speedL = forwardVal;
 			speedR = (absForward - absTurn < 0) ? 0 : -(absForward - absTurn);
 		}
-		else if(forwardSign == -1 && turnSign == -1){ //Backward left
+		else if(forwardSign == -1 && turnSign == 1){ //Backward left
 			speedL = (absForward - absTurn < 0) ? 0 : -(absForward - absTurn);
 			speedR = forwardVal;
 		}

@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator {
@@ -25,7 +26,10 @@ public class Elevator {
 	
 	private double pivotSpeed;
 	private double liftSpeed;
-		
+	
+	private double pivotTarget;
+	private boolean pivotLock;
+ 		
 	public Elevator(int leftPivotID,int rightPivotID, int leftLiftID, int rightLiftID, int pivotLimID, int liftLimID) {
 		
 		pivotBrake = new DoubleSolenoid(Constants.PIVOT_OUT, Constants.PIVOT_IN);
@@ -62,12 +66,15 @@ public class Elevator {
 		pivotSpeed = 0;
 		liftSpeed = 0;
 		
-		/*change to rightPivot for Competition*/
+		pivotTarget = 0;
+		pivotLock = false;
+		
+		/*change to leftPivot for Competition*/
 		rightPivot.selectProfileSlot(0, 0);
 		rightPivot.config_kF(0, 3, 10);
 		rightPivot.config_kP(0, 1.5, 10);
-		rightPivot.config_kI(0, .0005, 10);
-		rightPivot.config_kD(0, 100, 10);
+		rightPivot.config_kI(0, .002, 10);
+		rightPivot.config_kD(0, 50, 10);
 		rightPivot.config_IntegralZone(0, 0, 10);
 		
 		rightPivot.configMotionCruiseVelocity(200, 10);
@@ -102,7 +109,7 @@ public class Elevator {
 			activatePivotBrake();
 			disengagePivotHelper();
 		}
-		else if(speed > 0 && getLiftLimit() + 1 < getLiftDistance()) {
+		else if(speed > 0 && getLiftLimit(getPivotAngle()) + 1 < getLiftDistance()) {
 			pivotSpeed = 0;
 			activatePivotBrake();
 		}
@@ -124,40 +131,72 @@ public class Elevator {
 			activatePivotBrake();
 			pivotSpeed = 0;
 		}
-				
+		
+		rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
 		leftPivot.set(ControlMode.PercentOutput, pivotSpeed);
 		SmartDashboard.putNumber("pivot speed", pivotSpeed);
 	}
 	
+	/*Change to leftPivot for Conpetition*/
 	public void reportPivotData() {
 		SmartDashboard.putNumber("Pivot angle", (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0)) * Constants.PIVOT_ENCODER_CONVERSION);
 		SmartDashboard.putNumber("Encoder Position", rightPivot.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("Encoder Velocity", rightPivot.getSelectedSensorVelocity(0));
 		SmartDashboard.putNumber("pivot Error", rightPivot.getClosedLoopError(0));
+		SmartDashboard.putNumber("Pivot Position", pivotTarget);
 	}
 	
-	public void pivotMotionMagic(double position) {
-		leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
-		rightPivot.set(ControlMode.MotionMagic, position);
+	/*flip left and right pivots for competition*/
+	public void pivotUpdate() {
+		if(!pivotLimit.get()) {
+			rightPivot.setSelectedSensorPosition(0, 0, 0);
+			leftPivot.setSelectedSensorPosition(0, 0, 0);
+		}
+		if(pivotTarget == 0 && rightPivot.getSelectedSensorPosition(0) > -20 && pivotLimit.get()) {
+			leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
+			rightPivot.set(ControlMode.PercentOutput, .2);
+		}
+		else if(pivotLock || Math.abs(rightPivot.getSelectedSensorPosition(0) - pivotTarget) < 20) {
+			activatePivotBrake();
+			pivotLock = true;
+			rightPivot.set(ControlMode.PercentOutput, 0);
+			leftPivot.set(ControlMode.PercentOutput, 0);
+		}
+		else {
+			releasePivotBrake();
+			leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
+			rightPivot.set(ControlMode.MotionMagic, pivotTarget);
+		}
 	}
 	
+	public void setPivotTarget(double newTarget) {
+		
+		if(newTarget <= rightPivot.getSelectedSensorPosition(0) || getLiftLimit(pivotPosToAngle(newTarget)) + .1 >= getLiftDistance()) {
+			pivotTarget = newTarget;
+			pivotLock = false;
+		}
+	}
 	
 	public double getPivotAngle() {
 		return (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0))  * Constants.PIVOT_ENCODER_CONVERSION;
+	}
+	
+	public double pivotPosToAngle(double pivotPos) {
+		return pivotPos * Constants.PIVOT_ENCODER_CONVERSION;
 	}
 	
 	public double getLiftDistance() {
 		return leftLift.getSelectedSensorPosition(0) * Constants.LIFT_ENCODER_CONVERSION;
 	}
 	
-	public double getLiftLimit() {
-		if(getPivotAngle() < 50) {
+	public double getLiftLimit(double pivotAngle) {
+		if(pivotAngle < 40) {
 			return 0;
 		}
-		else if(getPivotAngle() < 75) {
+		else if(pivotAngle < 65) {
 			return 10;
 		}
-		if(getPivotAngle() < 85) {
+		else if(pivotAngle < 75) {
 			return 20;
 		}
 		else {
@@ -175,7 +214,7 @@ public class Elevator {
 			leftLift.setSelectedSensorPosition(0, 0, 0);
 		}
 		
-		else if(speed > 0 && getLiftLimit() + .5 < getLiftDistance()) {
+		else if(speed > 0 && getLiftLimit(getPivotAngle()) + .5 < getLiftDistance()) {
 			liftSpeed = 0;
 			activateLiftBrake();
 		}

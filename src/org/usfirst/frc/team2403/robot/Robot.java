@@ -135,26 +135,36 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		driver1Controls(joystick);
+		driver1Controls();
 		driveTrain.getDistance();
 	}
 
 	
-	public void driver1Controls(PlasmaJoystick joy) {
+	public void driver1Controls() {
 
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
-//		elevator.pivotRotate(joystick.RT, joystick.LT);
-		
-		
-		
-		
-		if(joystick.RT.isPressed()) {
-			elevator.pivotMotionMagic(-1500);
+		if(joystick.BACK.isToggled()) {
+			elevator.pivotRotate(joystick.RT, joystick.LT);
+			elevator.setPivotTarget(0);
 		}
 		else {
-			elevator.pivotMotionMagic(-200);
+			elevator.pivotUpdate();
+			if(joystick.dPad.getPOV() == 180) {
+				elevator.setPivotTarget(0);
+			}
+			else if(joystick.dPad.getPOV() == 270) {
+				elevator.setPivotTarget(-350);
+			}
+			else if(joystick.dPad.getPOV() == 90) {
+				elevator.setPivotTarget(-1100);
+			}
+			else if(joystick.dPad.getPOV() == 0) {
+				elevator.setPivotTarget(-1600);
+			}
+			else if(joystick.START.isPressed()) {
+				elevator.setPivotTarget(-1800);
+			}
 		}
-		
 		
 		
 		
@@ -164,11 +174,11 @@ public class Robot extends IterativeRobot {
 		else if(joystick.RB.isPressed()) {
 			intake.out(1);
 		}
-		else if(joystick.dPad.getPOV() > 45 && joystick.dPad.getPOV() < 135) {
-			intake.spinRight(1);
-		}
-		else if(joystick.dPad.getPOV() > 225 && joystick.dPad.getPOV() < 315) {
+		else if(joystick.B.isPressed()) {
 			intake.spinLeft(1);
+		}
+		else if(joystick.X.isPressed()) {
+			intake.spinRight(1);
 		}
 		else {
 			intake.out(0);
@@ -187,14 +197,12 @@ public class Robot extends IterativeRobot {
 			elevator.retract(0);
 		}
 		
-		if(joystick.X.isPressed()) {
+		
+		if(joystick.R3.isPressed()) {
 			intake.clamp();
 		}
-		else if(joystick.B.isPressed()) {
+		else if(joystick.L3.isPressed()) {
 			intake.release();
-		}
-		else {
-			
 		}
 	}
 	
