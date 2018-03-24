@@ -79,12 +79,14 @@ public class Robot extends IterativeRobot {
 	
 	public void robotPeriodic() {
 		elevator.reportPivotData();
+		SmartDashboard.putNumber("GyroAngle", driveTrain.getGyroAngle());
 	}
 	
 	public void disabledInit() {
 		compressor.start();
 		autoModeRunner.stop();
-		intake.clamp();
+		//intake.clamp();
+		driveTrain.zeroGyro();
 	}
 	
 	public void disabledPeriodic() {
@@ -105,6 +107,9 @@ public class Robot extends IterativeRobot {
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
 		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
+		
+		autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain));
+
 		autoModeRunner.start();
 		
 		//m_autoSelected = m_chooser.getSelected();
@@ -116,18 +121,7 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void autonomousPeriodic() {
-
-
-		
-		/*switch (m_autoSelected) {
-			case kCustomAuto:
-				// Put custom auto code here
-				break;
-			case kDefaultAuto:
-			default:
-				
-				break;
-		} */
+		driveTrain.getDistance();
 	}
 
 	/**
@@ -141,7 +135,7 @@ public class Robot extends IterativeRobot {
 
 	
 	public void driver1Controls() {
-
+		
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
 		if(joystick.BACK.isToggled()) {
 			elevator.pivotRotate(joystick.RT, joystick.LT);
@@ -159,7 +153,7 @@ public class Robot extends IterativeRobot {
 				elevator.setPivotTarget(-1100);
 			}
 			else if(joystick.dPad.getPOV() == 0) {
-				elevator.setPivotTarget(-1600);
+				elevator.setPivotTarget(-1500);
 			}
 			else if(joystick.START.isPressed()) {
 				elevator.setPivotTarget(-1800);
@@ -204,6 +198,13 @@ public class Robot extends IterativeRobot {
 		else if(joystick.L3.isPressed()) {
 			intake.release();
 		}
+	}
+	
+	@Override
+	public void testInit() {
+		autoModeRunner.chooseAutoMode(new GenerateTrajectories());
+
+		autoModeRunner.start();
 	}
 	
 	@Override

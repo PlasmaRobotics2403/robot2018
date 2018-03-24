@@ -7,10 +7,10 @@ public class Constants {
 	
 	
 	/* TALON ID CONSTANTS */
-	public static final int L_DRIVE_ID = 3;
-	public static final int L_DRIVE_SLAVE_ID = 4;
-	public static final int R_DRIVE_ID = 1;
-	public static final int R_DRIVE_SLAVE_ID = 2;
+	public static final int L_DRIVE_ID = 1;
+	public static final int L_DRIVE_SLAVE_ID = 2;
+	public static final int R_DRIVE_ID = 3;
+	public static final int R_DRIVE_SLAVE_ID = 4;
 	public static final int INTAKE_LEFT_ID = 5;
 	public static final int INTAKE_RIGHT_ID = 6;
 	public static final int ELEV_PIVOT_LEFT_ID = 7;
@@ -22,7 +22,7 @@ public class Constants {
 	public static final double MAX_AUTO_DRIVE_SPEED = .9;
 	public static final double MAX_DRIVE_SPEED = 1;
 	public static final double MAX_DRIVE_TURN = 1;	
-	public static final double DRIVE_ENCODER_CONVERSION = -0.0048334959;
+	public static final double DRIVE_ENCODER_CONVERSION = 0.0045002849;
 	
 	
 	/*ELEVATOR CONSTANTS*/
@@ -47,4 +47,7 @@ public class Constants {
 	public static final int LIFT_IN = 5;
 	public static final int HELP_EXTEND = 6;
 	public static final int HELP_RETRACT = 7;
+	
+	/*TALON CONFIG CONSTANTS*/
+	public static final int TALON_TIMEOUT = 10;
 }

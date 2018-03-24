@@ -36,7 +36,7 @@ public class TurnAngle implements Action {
 		this.angle = angle;
 		this.drive = drive;
 		speedPValue = .005;
-		minSpeed = .6 * this.speed / Math.abs(this.speed);
+		minSpeed = .3 * this.speed / Math.abs(this.speed);
 		fullSpeedTime = .12;
 	}
 	

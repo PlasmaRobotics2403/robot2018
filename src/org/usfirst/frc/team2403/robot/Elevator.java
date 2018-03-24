@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator {
@@ -71,14 +70,14 @@ public class Elevator {
 		
 		/*change to leftPivot for Competition*/
 		rightPivot.selectProfileSlot(0, 0);
-		rightPivot.config_kF(0, 3, 10);
-		rightPivot.config_kP(0, 1.5, 10);
-		rightPivot.config_kI(0, .002, 10);
-		rightPivot.config_kD(0, 50, 10);
-		rightPivot.config_IntegralZone(0, 0, 10);
+		rightPivot.config_kF(0, 3, Constants.TALON_TIMEOUT);
+		rightPivot.config_kP(0, 1.5, Constants.TALON_TIMEOUT);
+		rightPivot.config_kI(0, .002, Constants.TALON_TIMEOUT);
+		rightPivot.config_kD(0, 50, Constants.TALON_TIMEOUT);
+		rightPivot.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 		
-		rightPivot.configMotionCruiseVelocity(200, 10);
-		rightPivot.configMotionAcceleration(150, 10);
+		rightPivot.configMotionCruiseVelocity(200, Constants.TALON_TIMEOUT);
+		rightPivot.configMotionAcceleration(150, Constants.TALON_TIMEOUT);
 	}
 	
 

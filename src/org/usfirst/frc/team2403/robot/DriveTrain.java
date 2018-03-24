@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 	
-	private TalonSRX leftDrive;
-	private TalonSRX leftDriveSlave;
-	private TalonSRX rightDrive;
-	private TalonSRX rightDriveSlave;
+	public TalonSRX leftDrive;
+	public TalonSRX leftDriveSlave;
+	public TalonSRX rightDrive;
+	public TalonSRX rightDriveSlave;
 	
 	private AHRS navX;
 	private double gyroAngle;
@@ -42,13 +42,29 @@ public class DriveTrain {
 		
 		leftDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		leftDrive.setSensorPhase(true);
+		rightDrive.setSensorPhase(true);
 		
-		leftDrive.setInverted(true);
-		leftDriveSlave.setInverted(true);
+		leftDrive.setInverted(false);
+		leftDriveSlave.setInverted(false);
+		rightDrive.setInverted(true);
+		rightDriveSlave.setInverted(true);
 		
 		navX = new AHRS(SPI.Port.kMXP);
 		
+		leftDrive.selectProfileSlot(0, 0);
+		leftDrive.config_kF(0, .5, Constants.TALON_TIMEOUT);
+		leftDrive.config_kP(0, .2, Constants.TALON_TIMEOUT);
+		leftDrive.config_kI(0, 0, Constants.TALON_TIMEOUT);
+		leftDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
+		leftDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 		
+		rightDrive.selectProfileSlot(0, 0);
+		rightDrive.config_kF(0, .5, Constants.TALON_TIMEOUT);
+		rightDrive.config_kP(0, .2, Constants.TALON_TIMEOUT);
+		rightDrive.config_kI(0, 0, Constants.TALON_TIMEOUT);
+		rightDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
+		rightDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 	}
 	
 	public void resetEncoders(){
@@ -116,24 +132,24 @@ public class DriveTrain {
 			speedR = forwardVal;
 		}
 		else if(forwardVal == 0){ //Pivot turn
-			speedL = -turnVal;
-			speedR = turnVal;
+			speedL = turnVal;
+			speedR = -turnVal;
 		}
 		else if(forwardSign == 1 && turnSign == 1){ //Forward right
-			speedL = (absForward - absTurn < 0) ? 0 : absForward - absTurn;
-			speedR = forwardVal;
-		}
-		else if(forwardSign == 1 && turnSign == -1){ //Forward left
 			speedL = forwardVal;
 			speedR = (absForward - absTurn < 0) ? 0 : absForward - absTurn;
 		}
-		else if(forwardSign == -1 && turnSign == -1){ //Backward right
-			speedL = forwardVal;
-			speedR = (absForward - absTurn < 0) ? 0 : -(absForward - absTurn);
+		else if(forwardSign == 1 && turnSign == -1){ //Forward left
+			speedL = (absForward - absTurn < 0) ? 0 : absForward - absTurn;
+			speedR = forwardVal;
 		}
-		else if(forwardSign == -1 && turnSign == 1){ //Backward left
+		else if(forwardSign == -1 && turnSign == -1){ //Backward right
 			speedL = (absForward - absTurn < 0) ? 0 : -(absForward - absTurn);
 			speedR = forwardVal;
+		}
+		else if(forwardSign == -1 && turnSign == 1){ //Backward left
+			speedL = forwardVal;
+			speedR = (absForward - absTurn < 0) ? 0 : -(absForward - absTurn);
 		}
 		else{
 			speedL = 0;
@@ -148,6 +164,9 @@ public class DriveTrain {
 		rightDrive.set(ControlMode.PercentOutput, speedR);
 		leftDriveSlave.set(ControlMode.PercentOutput,speedL);
 		rightDriveSlave.set(ControlMode.PercentOutput, speedR);
+		
+		SmartDashboard.putNumber("drive enc vel", leftDrive.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("drive power", speedL);
 		
 	}
 	
