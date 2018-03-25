@@ -202,6 +202,7 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testInit() {
+		driveTrain.FPSDrive(0, 0);
 		autoModeRunner.chooseAutoMode(new GenerateTrajectories());
 
 		autoModeRunner.start();
@@ -209,5 +210,6 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testPeriodic() {
+		driveTrain.FPSDrive(0, 0);
 	}
 }

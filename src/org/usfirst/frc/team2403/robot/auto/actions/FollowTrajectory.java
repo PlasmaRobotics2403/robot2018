@@ -20,6 +20,8 @@ public class FollowTrajectory implements Action {
 	Trajectory rightTrajectory;
 	DriveTrain drive;
 	Notifier notifier;
+	int leftIndex;
+	int rightIndex;
 	
 	class PeriodicRunnable implements java.lang.Runnable{
 		public void run() {
@@ -33,6 +35,8 @@ public class FollowTrajectory implements Action {
 		this.rightTrajectory = rightTrajectory;
 		this.drive = drive;
 		this.notifier = new Notifier(new PeriodicRunnable());
+		leftIndex = 0;
+		rightIndex = 0;
 	}
 
 	@Override
@@ -41,23 +45,9 @@ public class FollowTrajectory implements Action {
 		drive.rightDrive.getMotionProfileStatus(status);
 		return status.isLast;
 	}
-
-	@Override
-	public void start() {
-		
-		drive.leftDrive.clearMotionProfileTrajectories();
-		drive.rightDrive.clearMotionProfileTrajectories();
-		
-		drive.leftDrive.clearMotionProfileHasUnderrun(0);
-		drive.rightDrive.clearMotionProfileHasUnderrun(0);
-		
-		drive.leftDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
-		drive.rightDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
-		
-		drive.leftDrive.set(ControlMode.MotionProfile, 0);
-		drive.rightDrive.set(ControlMode.MotionProfile, 0);
-		
-		for(int i = 0; i < leftTrajectory.length(); i++) {
+	
+	private void bufferPoints() {
+		for(int i = leftIndex; i < leftTrajectory.length(); i++) {
 			TrajectoryPoint point = new TrajectoryPoint();
 			double positionInch = leftTrajectory.get(i).position;
 			double velocityInch = leftTrajectory.get(i).velocity;
@@ -76,10 +66,17 @@ public class FollowTrajectory implements Action {
 			if(i + 1 == leftTrajectory.length()) {
 				point.isLastPoint = true;
 			}
-			drive.leftDrive.pushMotionProfileTrajectory(point);
+			if(drive.leftDrive.isMotionProfileTopLevelBufferFull()) {
+				leftIndex = i;
+				break;
+			}
+			else {
+				drive.leftDrive.pushMotionProfileTrajectory(point);	
+				leftIndex = i + 1;
+			}
 		}
 		
-		for(int i = 0; i < rightTrajectory.length(); i++) {
+		for(int i = rightIndex; i < rightTrajectory.length(); i++) {
 			TrajectoryPoint point = new TrajectoryPoint();
 			double positionInch = rightTrajectory.get(i).position;
 			double velocityInch = rightTrajectory.get(i).velocity;
@@ -98,13 +95,40 @@ public class FollowTrajectory implements Action {
 			if(i + 1 == rightTrajectory.length()) {
 				point.isLastPoint = true;
 			}
-			drive.rightDrive.pushMotionProfileTrajectory(point);
+			if(drive.rightDrive.isMotionProfileTopLevelBufferFull()) {
+				rightIndex = i;
+				break;
+			}
+			else {
+				drive.rightDrive.pushMotionProfileTrajectory(point);	
+				rightIndex = i + 1;
+			}
 		}
+	}
+
+	@Override
+	public void start() {
+		
+		drive.leftDrive.clearMotionProfileTrajectories();
+		drive.rightDrive.clearMotionProfileTrajectories();
+		
+		drive.leftDrive.clearMotionProfileHasUnderrun(0);
+		drive.rightDrive.clearMotionProfileHasUnderrun(0);
+		
+		drive.leftDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
+		drive.rightDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
+		
+		drive.leftDrive.set(ControlMode.MotionProfile, 0);
+		drive.rightDrive.set(ControlMode.MotionProfile, 0);
+		
+		bufferPoints();
+		
 		notifier.startPeriodic(.005);
 	}
 
 	@Override
 	public void update() {
+		bufferPoints();
 		MotionProfileStatus status = new MotionProfileStatus();
 		drive.leftDrive.getMotionProfileStatus(status);
 		if(status.btmBufferCnt > 64) {

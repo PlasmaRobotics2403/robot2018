@@ -24,18 +24,20 @@ public class GenerateTrajectory implements Action {
 
 	@Override
 	public void start() {
-		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 96, 24, 48);
+		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 144, 70, 40);
 		
 		Waypoint[] points = new Waypoint[] {
 				new Waypoint(0, 0, 0),
-				new Waypoint(100, 0, 0)//,
-				//new Waypoint(100, -50, Pathfinder.d2r(-90))
+				new Waypoint(90, -40, 0),
+				new Waypoint(110, -40, 0),
+				new Waypoint(200, 0, 0)
+				//new Waypoint(100, -40, Pathfinder.d2r(-90))
 		};
 		
 		DriverStation.reportError("Starting Generation", true);
 		Trajectory trajectory = Pathfinder.generate(points, config);
 		
-		TankModifier modifier = new TankModifier(trajectory).modify(26);
+		TankModifier modifier = new TankModifier(trajectory).modify(27);
 		
 		Trajectory outside = modifier.getLeftTrajectory();
 		Trajectory inside = modifier.getRightTrajectory();

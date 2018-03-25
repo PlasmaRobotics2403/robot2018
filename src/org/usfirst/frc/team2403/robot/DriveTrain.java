@@ -53,16 +53,16 @@ public class DriveTrain {
 		navX = new AHRS(SPI.Port.kMXP);
 		
 		leftDrive.selectProfileSlot(0, 0);
-		leftDrive.config_kF(0, .5, Constants.TALON_TIMEOUT);
-		leftDrive.config_kP(0, .2, Constants.TALON_TIMEOUT);
-		leftDrive.config_kI(0, 0, Constants.TALON_TIMEOUT);
+		leftDrive.config_kF(0, .45, Constants.TALON_TIMEOUT);
+		leftDrive.config_kP(0, 3, Constants.TALON_TIMEOUT);
+		leftDrive.config_kI(0, .003, Constants.TALON_TIMEOUT);
 		leftDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
 		leftDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 		
 		rightDrive.selectProfileSlot(0, 0);
-		rightDrive.config_kF(0, .5, Constants.TALON_TIMEOUT);
-		rightDrive.config_kP(0, .2, Constants.TALON_TIMEOUT);
-		rightDrive.config_kI(0, 0, Constants.TALON_TIMEOUT);
+		rightDrive.config_kF(0, .45, Constants.TALON_TIMEOUT);
+		rightDrive.config_kP(0, 3, Constants.TALON_TIMEOUT);
+		rightDrive.config_kI(0, .003, Constants.TALON_TIMEOUT);
 		rightDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
 		rightDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 	}
@@ -80,6 +80,8 @@ public class DriveTrain {
 	public double getDistance(){
 		SmartDashboard.putNumber("distL", toDistance(leftDrive));
 		SmartDashboard.putNumber("distR", toDistance(rightDrive));
+		SmartDashboard.putNumber("velL", leftDrive.getSelectedSensorVelocity(0) * Constants.DRIVE_ENCODER_CONVERSION / .1);
+		SmartDashboard.putNumber("velR", rightDrive.getSelectedSensorVelocity(0) * Constants.DRIVE_ENCODER_CONVERSION / .1);
 		return (toDistance(rightDrive) + toDistance(leftDrive))/2;
 	}
 	
