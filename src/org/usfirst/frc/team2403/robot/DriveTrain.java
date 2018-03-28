@@ -2,6 +2,7 @@ package org.usfirst.frc.team2403.robot;
 
 import org.usfirst.frc.team2403.robot.controllers.PlasmaAxis;
 
+import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -53,18 +54,23 @@ public class DriveTrain {
 		navX = new AHRS(SPI.Port.kMXP);
 		
 		leftDrive.selectProfileSlot(0, 0);
-		leftDrive.config_kF(0, .45, Constants.TALON_TIMEOUT);
-		leftDrive.config_kP(0, 3, Constants.TALON_TIMEOUT);
-		leftDrive.config_kI(0, .003, Constants.TALON_TIMEOUT);
-		leftDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
+		leftDrive.config_kF(0, .35, Constants.TALON_TIMEOUT);
+		leftDrive.config_kP(0, 1.2, Constants.TALON_TIMEOUT);
+		leftDrive.config_kI(0, .005, Constants.TALON_TIMEOUT);
+		leftDrive.config_kD(0, 25, Constants.TALON_TIMEOUT);
 		leftDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 		
 		rightDrive.selectProfileSlot(0, 0);
-		rightDrive.config_kF(0, .45, Constants.TALON_TIMEOUT);
-		rightDrive.config_kP(0, 3, Constants.TALON_TIMEOUT);
-		rightDrive.config_kI(0, .003, Constants.TALON_TIMEOUT);
-		rightDrive.config_kD(0, 0, Constants.TALON_TIMEOUT);
+		rightDrive.config_kF(0, .35, Constants.TALON_TIMEOUT);
+		rightDrive.config_kP(0, 1.2, Constants.TALON_TIMEOUT);
+		rightDrive.config_kI(0, .005, Constants.TALON_TIMEOUT);
+		rightDrive.config_kD(0, 25, Constants.TALON_TIMEOUT);
 		rightDrive.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
+		
+		leftDrive.setControlFramePeriod(ControlFrame.Control_3_General, 5);
+		rightDrive.setControlFramePeriod(ControlFrame.Control_3_General, 5);
+		leftDriveSlave.setControlFramePeriod(ControlFrame.Control_3_General, 5);
+		rightDriveSlave.setControlFramePeriod(ControlFrame.Control_3_General, 5);
 	}
 	
 	public void resetEncoders(){
@@ -167,7 +173,7 @@ public class DriveTrain {
 		leftDriveSlave.set(ControlMode.PercentOutput,speedL);
 		rightDriveSlave.set(ControlMode.PercentOutput, speedR);
 		
-		SmartDashboard.putNumber("drive enc vel", leftDrive.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("drive enc vel", leftDrive.getSelectedSensorVelocity(0) * 10 * Constants.DRIVE_ENCODER_CONVERSION);
 		SmartDashboard.putNumber("drive power", speedL);
 		
 	}

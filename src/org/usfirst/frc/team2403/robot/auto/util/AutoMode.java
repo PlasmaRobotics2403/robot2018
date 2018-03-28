@@ -61,16 +61,17 @@ public abstract class AutoMode {
 		isActiveWithThrow();
 		action.start();
 		long waitTime = (long)(updateRate * 1000.0);
-		while(isActiveWithThrow() && !action.isFinished()){
+		while(isActive() && !action.isFinished()){
 			action.update();
 			try{
 				Thread.sleep(waitTime);
 			}
 			catch(InterruptedException e){
-				isActive = false;
+				stop();
 			}
 		}
 		action.end();
+		isActiveWithThrow();
 	}
 	
 	/**

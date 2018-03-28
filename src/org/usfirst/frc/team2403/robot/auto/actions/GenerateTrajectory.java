@@ -24,14 +24,13 @@ public class GenerateTrajectory implements Action {
 
 	@Override
 	public void start() {
-		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 144, 70, 40);
+		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 100, 50, 80);
 		
 		Waypoint[] points = new Waypoint[] {
 				new Waypoint(0, 0, 0),
-				new Waypoint(90, -40, 0),
-				new Waypoint(110, -40, 0),
-				new Waypoint(200, 0, 0)
-				//new Waypoint(100, -40, Pathfinder.d2r(-90))
+				new Waypoint(60, -40, 0),
+				new Waypoint(80, -40, 0),
+				new Waypoint(140, 0, 0)
 		};
 		
 		DriverStation.reportError("Starting Generation", true);

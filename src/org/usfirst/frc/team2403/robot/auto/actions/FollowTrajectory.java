@@ -4,146 +4,82 @@ import org.usfirst.frc.team2403.robot.Constants;
 import org.usfirst.frc.team2403.robot.DriveTrain;
 import org.usfirst.frc.team2403.robot.auto.util.Action;
 
-import com.ctre.phoenix.motion.MotionProfileStatus;
-import com.ctre.phoenix.motion.TrajectoryPoint;
-import com.ctre.phoenix.motion.TrajectoryPoint.TrajectoryDuration;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.*;
+import jaci.pathfinder.followers.EncoderFollower;
 
 public class FollowTrajectory implements Action {
-	
-	Trajectory leftTrajectory;
-	Trajectory rightTrajectory;
+
 	DriveTrain drive;
-	Notifier notifier;
-	int leftIndex;
-	int rightIndex;
+	Notifier followLoop;
+	EncoderFollower leftFollower;
+	EncoderFollower rightFollower;
 	
 	class PeriodicRunnable implements java.lang.Runnable{
 		public void run() {
-			drive.leftDrive.processMotionProfileBuffer();
-			drive.rightDrive.processMotionProfileBuffer();
+			double l = leftFollower.calculate(drive.leftDrive.getSelectedSensorPosition(0));
+			double r = rightFollower.calculate(drive.rightDrive.getSelectedSensorPosition(0));
+			
+			double currentHeading = -drive.getGyroAngle();
+			double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
+			
+			double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading);
+			double turn = 0 * angleDifference;
+			
+			SmartDashboard.putNumber("angleDiff", angleDifference);
+			
+			double speedL = (l - turn) * .1 / Constants.DRIVE_ENCODER_CONVERSION;
+			double speedR = (r + turn) * .1 / Constants.DRIVE_ENCODER_CONVERSION;
+			
+			drive.leftDrive.set(ControlMode.Velocity, speedL);
+			drive.rightDrive.set(ControlMode.Velocity, speedR);
+			drive.leftDriveSlave.set(ControlMode.Follower, drive.leftDrive.getDeviceID());
+			drive.rightDriveSlave.set(ControlMode.Follower, drive.rightDrive.getDeviceID());
 		}
 	}
 	
 	public FollowTrajectory(Trajectory leftTrajectory, Trajectory rightTrajectory, DriveTrain drive) {
-		this.leftTrajectory = leftTrajectory;
-		this.rightTrajectory = rightTrajectory;
 		this.drive = drive;
-		this.notifier = new Notifier(new PeriodicRunnable());
-		leftIndex = 0;
-		rightIndex = 0;
+		this.followLoop = new Notifier(new PeriodicRunnable());
+		leftFollower = new EncoderFollower(leftTrajectory);
+		rightFollower = new EncoderFollower(rightTrajectory);
 	}
 
 	@Override
 	public boolean isFinished() {
-		MotionProfileStatus status = new MotionProfileStatus();
-		drive.rightDrive.getMotionProfileStatus(status);
-		return status.isLast;
+		return leftFollower.isFinished();
 	}
 	
-	private void bufferPoints() {
-		for(int i = leftIndex; i < leftTrajectory.length(); i++) {
-			TrajectoryPoint point = new TrajectoryPoint();
-			double positionInch = leftTrajectory.get(i).position;
-			double velocityInch = leftTrajectory.get(i).velocity;
-			
-			point.position = positionInch / Constants.DRIVE_ENCODER_CONVERSION;
-			point.velocity = (velocityInch * .1) / Constants.DRIVE_ENCODER_CONVERSION;
-			point.headingDeg = 0;
-			point.profileSlotSelect0 = 0;
-			point.profileSlotSelect1 = 0;
-			point.timeDur = TrajectoryDuration.Trajectory_Duration_10ms;
-			point.zeroPos = false;
-			if(i == 0) {
-				point.zeroPos = true;
-			}
-			point.isLastPoint = false;
-			if(i + 1 == leftTrajectory.length()) {
-				point.isLastPoint = true;
-			}
-			if(drive.leftDrive.isMotionProfileTopLevelBufferFull()) {
-				leftIndex = i;
-				break;
-			}
-			else {
-				drive.leftDrive.pushMotionProfileTrajectory(point);	
-				leftIndex = i + 1;
-			}
-		}
-		
-		for(int i = rightIndex; i < rightTrajectory.length(); i++) {
-			TrajectoryPoint point = new TrajectoryPoint();
-			double positionInch = rightTrajectory.get(i).position;
-			double velocityInch = rightTrajectory.get(i).velocity;
-			
-			point.position = (positionInch) / Constants.DRIVE_ENCODER_CONVERSION;
-			point.velocity = (velocityInch * .1) / Constants.DRIVE_ENCODER_CONVERSION;
-			point.headingDeg = 0;
-			point.profileSlotSelect0 = 0;
-			point.profileSlotSelect1 = 0;
-			point.timeDur = TrajectoryDuration.Trajectory_Duration_10ms;
-			point.zeroPos = false;
-			if(i == 0) {
-				point.zeroPos = true;
-			}
-			point.isLastPoint = false;
-			if(i + 1 == rightTrajectory.length()) {
-				point.isLastPoint = true;
-			}
-			if(drive.rightDrive.isMotionProfileTopLevelBufferFull()) {
-				rightIndex = i;
-				break;
-			}
-			else {
-				drive.rightDrive.pushMotionProfileTrajectory(point);	
-				rightIndex = i + 1;
-			}
-		}
-	}
-
 	@Override
 	public void start() {
+		drive.leftDrive.setSelectedSensorPosition(0, 0, 0);
+		drive.rightDrive.setSelectedSensorPosition(0, 0, 0);
+		drive.zeroGyro();
 		
-		drive.leftDrive.clearMotionProfileTrajectories();
-		drive.rightDrive.clearMotionProfileTrajectories();
+		leftFollower.configureEncoder(drive.leftDrive.getSelectedSensorPosition(0), (int) (1/Constants.DRIVE_ENCODER_CONVERSION), 1/Math.PI);
+		rightFollower.configureEncoder(drive.rightDrive.getSelectedSensorPosition(0), (int) (1/Constants.DRIVE_ENCODER_CONVERSION), 1/Math.PI);
+		leftFollower.configurePIDVA(.3, 0, 0, 1, 0);
+		rightFollower.configurePIDVA(.3, 0, 0, 1, 0);
+		followLoop.startPeriodic(.01);
 		
-		drive.leftDrive.clearMotionProfileHasUnderrun(0);
-		drive.rightDrive.clearMotionProfileHasUnderrun(0);
 		
-		drive.leftDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
-		drive.rightDrive.configMotionProfileTrajectoryPeriod(0, Constants.TALON_TIMEOUT);
-		
-		drive.leftDrive.set(ControlMode.MotionProfile, 0);
-		drive.rightDrive.set(ControlMode.MotionProfile, 0);
-		
-		bufferPoints();
-		
-		notifier.startPeriodic(.005);
 	}
 
 	@Override
 	public void update() {
-		bufferPoints();
-		MotionProfileStatus status = new MotionProfileStatus();
-		drive.leftDrive.getMotionProfileStatus(status);
-		if(status.btmBufferCnt > 64) {
-			drive.leftDrive.set(ControlMode.MotionProfile, 1);
-			drive.rightDrive.set(ControlMode.MotionProfile, 1);
-			drive.leftDriveSlave.set(ControlMode.Follower, drive.leftDrive.getDeviceID());
-			drive.rightDriveSlave.set(ControlMode.Follower, drive.rightDrive.getDeviceID());
-		}
 		SmartDashboard.putNumber("Left Error", drive.leftDrive.getClosedLoopError(0));
 		SmartDashboard.putNumber("Right Error", drive.rightDrive.getClosedLoopError(0));
+		SmartDashboard.putNumber("leftPosition Error", leftFollower.getSegment().position - (drive.leftDrive.getSelectedSensorPosition(0) * Constants.DRIVE_ENCODER_CONVERSION));
 	}
 
 	@Override
 	public void end() {
-		notifier.stop();
+		followLoop.stop();
+		DriverStation.reportWarning("Loop Killed", false);
 		drive.leftDrive.set(ControlMode.PercentOutput, 0);
 		drive.rightDrive.set(ControlMode.PercentOutput, 0);
 		drive.leftDriveSlave.set(ControlMode.PercentOutput, 0);
