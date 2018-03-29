@@ -11,9 +11,16 @@ import jaci.pathfinder.modifiers.TankModifier;
 public class GenerateTrajectory implements Action {
 	
 	boolean finished;
+	boolean isReversed;
+	Waypoint waypoints[];
+	String name;
 	
-	public GenerateTrajectory() {
-		finished = false;	
+	public GenerateTrajectory(Waypoint waypoints[], String name, boolean isReversed) {
+		finished = false;
+		this.isReversed = isReversed;
+		this.waypoints = waypoints;
+		this.name = name;
+		
 	}
 	
 	@Override
@@ -26,28 +33,37 @@ public class GenerateTrajectory implements Action {
 	public void start() {
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 100, 50, 80);
 		
-		Waypoint[] points = new Waypoint[] {
-				new Waypoint(0, 0, 0),
-				new Waypoint(60, -40, 0),
-				new Waypoint(80, -40, 0),
-				new Waypoint(140, 0, 0)
-		};
+		DriverStation.reportWarning("Starting Generation of Path: " + name, false);
+		Trajectory trajectory = Pathfinder.generate(waypoints, config);
+		TankModifier modifier = new TankModifier(trajectory).modify(26);
 		
-		DriverStation.reportError("Starting Generation", true);
-		Trajectory trajectory = Pathfinder.generate(points, config);
+		Trajectory left;
+		Trajectory right;
 		
-		TankModifier modifier = new TankModifier(trajectory).modify(27);
+		if(!isReversed) {
+			left = modifier.getLeftTrajectory();
+			right = modifier.getRightTrajectory();
+		}
+		else {
+			right = modifier.getLeftTrajectory();
+			left = modifier.getRightTrajectory();
+			for(int i = 0; i < right.segments.length; i++) {
+				right.segments[i].position *= -1;
+				right.segments[i].velocity *= -1;
+			}
+			for(int i = 0; i < left.segments.length; i++) {
+				left.segments[i].position *= -1;
+				left.segments[i].velocity *= -1;
+			}
+		}
 		
-		Trajectory outside = modifier.getLeftTrajectory();
-		Trajectory inside = modifier.getRightTrajectory();
+		File leftFile = new File("/home/lvuser/" + name + "Left");
+		File rightFile = new File("/home/lvuser/" + name + "Right");
 		
-		File outsideFile = new File("/home/lvuser/outside");
-		File insideFile = new File("/home/lvuser/inside");
+		Pathfinder.writeToFile(leftFile, left);
+		Pathfinder.writeToFile(rightFile, right);
 		
-		Pathfinder.writeToFile(outsideFile, outside);
-		Pathfinder.writeToFile(insideFile, inside);
-		
-		DriverStation.reportError("Generation finished", true);
+		DriverStation.reportWarning("Ended Generation of Path: " + name, true);
 		
 		finished = true;
 	}

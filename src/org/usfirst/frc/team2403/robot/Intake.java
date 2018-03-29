@@ -44,10 +44,18 @@ public class Intake {
 	
 	public void release() {
 		clamp.set(DoubleSolenoid.Value.kForward);
-
 	}
+	
 	public void clamp() {
 		clamp.set(DoubleSolenoid.Value.kReverse);
-
+	}
+	
+	public boolean isClamped() {
+		if(clamp.get() == DoubleSolenoid.Value.kReverse) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

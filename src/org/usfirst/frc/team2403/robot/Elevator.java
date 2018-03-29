@@ -56,11 +56,9 @@ public class Elevator {
 		rightPivot.setInverted(true);
 		
 		leftPivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		rightPivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftLift.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		
 		leftPivot.setSensorPhase(true);
-		rightPivot.setSensorPhase(true);
 		leftLift.setSensorPhase(true);
 		pivotSpeed = 0;
 		liftSpeed = 0;
@@ -69,15 +67,15 @@ public class Elevator {
 		pivotLock = false;
 		
 		/*change to leftPivot for Competition*/
-		rightPivot.selectProfileSlot(0, 0);
-		rightPivot.config_kF(0, 3, Constants.TALON_TIMEOUT);
-		rightPivot.config_kP(0, 1.5, Constants.TALON_TIMEOUT);
-		rightPivot.config_kI(0, .002, Constants.TALON_TIMEOUT);
-		rightPivot.config_kD(0, 50, Constants.TALON_TIMEOUT);
-		rightPivot.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
+		leftPivot.selectProfileSlot(0, 0);
+		leftPivot.config_kF(0, 3, Constants.TALON_TIMEOUT);
+		leftPivot.config_kP(0, 1.5, Constants.TALON_TIMEOUT);
+		leftPivot.config_kI(0, .002, Constants.TALON_TIMEOUT);
+		leftPivot.config_kD(0, 50, Constants.TALON_TIMEOUT);
+		leftPivot.config_IntegralZone(0, 0, Constants.TALON_TIMEOUT);
 		
-		rightPivot.configMotionCruiseVelocity(200, Constants.TALON_TIMEOUT);
-		rightPivot.configMotionAcceleration(150, Constants.TALON_TIMEOUT);
+		leftPivot.configMotionCruiseVelocity(200, Constants.TALON_TIMEOUT);
+		leftPivot.configMotionAcceleration(150, Constants.TALON_TIMEOUT);
 	}
 	
 
@@ -104,7 +102,6 @@ public class Elevator {
 		if(speed >= 0 && !pivotLimit.get()) {
 			pivotSpeed = 0;
 			leftPivot.setSelectedSensorPosition(0, 0, 0);
-			rightPivot.setSelectedSensorPosition(0, 0, 0);
 			activatePivotBrake();
 			disengagePivotHelper();
 		}
@@ -138,24 +135,23 @@ public class Elevator {
 	
 	/*Change to leftPivot for Conpetition*/
 	public void reportPivotData() {
-		SmartDashboard.putNumber("Pivot angle", (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0)) * Constants.PIVOT_ENCODER_CONVERSION);
-		SmartDashboard.putNumber("Encoder Position", rightPivot.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("Encoder Velocity", rightPivot.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("pivot Error", rightPivot.getClosedLoopError(0));
+		SmartDashboard.putNumber("Pivot angle", leftPivot.getSelectedSensorPosition(0) * Constants.PIVOT_ENCODER_CONVERSION);
+		SmartDashboard.putNumber("Encoder Position", leftPivot.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Encoder Velocity", leftPivot.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("pivot Error", leftPivot.getClosedLoopError(0));
 		SmartDashboard.putNumber("Pivot Position", pivotTarget);
 	}
 	
 	/*flip left and right pivots for competition*/
 	public void pivotUpdate() {
 		if(!pivotLimit.get()) {
-			rightPivot.setSelectedSensorPosition(0, 0, 0);
 			leftPivot.setSelectedSensorPosition(0, 0, 0);
 		}
-		if(pivotTarget == 0 && rightPivot.getSelectedSensorPosition(0) > -20 && pivotLimit.get()) {
-			leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
-			rightPivot.set(ControlMode.PercentOutput, .2);
+		if(pivotTarget == 0 && leftPivot.getSelectedSensorPosition(0) > -20 && pivotLimit.get()) {
+			rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
+			leftPivot.set(ControlMode.PercentOutput, .2);
 		}
-		else if(pivotLock || Math.abs(rightPivot.getSelectedSensorPosition(0) - pivotTarget) < 20) {
+		else if(pivotLock || Math.abs(leftPivot.getSelectedSensorPosition(0) - pivotTarget) < 20) {
 			activatePivotBrake();
 			pivotLock = true;
 			rightPivot.set(ControlMode.PercentOutput, 0);
@@ -163,21 +159,25 @@ public class Elevator {
 		}
 		else {
 			releasePivotBrake();
-			leftPivot.set(ControlMode.Follower, rightPivot.getDeviceID());
-			rightPivot.set(ControlMode.MotionMagic, pivotTarget);
+			rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
+			leftPivot.set(ControlMode.MotionMagic, pivotTarget);
 		}
 	}
 	
 	public void setPivotTarget(double newTarget) {
 		
-		if(newTarget <= rightPivot.getSelectedSensorPosition(0) || getLiftLimit(pivotPosToAngle(newTarget)) + .1 >= getLiftDistance()) {
+		if(newTarget <= leftPivot.getSelectedSensorPosition(0) || getLiftLimit(pivotPosToAngle(newTarget)) + .1 >= getLiftDistance()) {
 			pivotTarget = newTarget;
 			pivotLock = false;
 		}
 	}
 	
+	public boolean getPivotLock() {
+		return pivotLock;
+	}
+	
 	public double getPivotAngle() {
-		return (leftPivot.getSelectedSensorPosition(0) + rightPivot.getSelectedSensorPosition(0))  * Constants.PIVOT_ENCODER_CONVERSION;
+		return (leftPivot.getSelectedSensorPosition(0))  * Constants.PIVOT_ENCODER_CONVERSION;
 	}
 	
 	public double pivotPosToAngle(double pivotPos) {
@@ -247,6 +247,10 @@ public class Elevator {
 		talon.configPeakCurrentLimit(25, 1000);
 		talon.configContinuousCurrentLimit(25, 1000);
 		talon.enableCurrentLimit(true);
+	}
+	
+	public boolean getLiftSwitch() {
+		return !liftLimit.get();
 	}
 	
 	public void extend(double speed) {

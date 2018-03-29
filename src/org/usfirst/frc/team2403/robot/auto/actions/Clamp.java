@@ -1,50 +1,44 @@
 package org.usfirst.frc.team2403.robot.auto.actions;
+
 import org.usfirst.frc.team2403.robot.Intake;
 import org.usfirst.frc.team2403.robot.auto.util.Action;
 
-import edu.wpi.first.wpilibj.Timer;
-
-/**
- *
- */
-public class ReleaseCube implements Action {
-
-	double speed;
-	Timer time;
+public class Clamp implements Action {
+	
+	boolean isClamping;
 	Intake intake;
-
 	
-	public ReleaseCube(double speed, Intake intake){
-		this.speed = speed;
+	public Clamp(Intake intake, boolean isClamping) {
 		this.intake = intake;
-		time = new Timer();
+		this.isClamping = isClamping;
 	}
-	
-	
+
 	@Override
 	public boolean isFinished() {
-		if(time.get() >= 1) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return true;
 	}
-	
+
 	@Override
 	public void start() {
-		time.start();
-			intake.spin(speed);
+		if(isClamping) {
+			intake.clamp();
+		}
+		else {
+			intake.release();
+		}
+
 	}
 
 	@Override
 	public void update() {
+		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void end() {
-		intake.spin(0);
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -108,7 +108,7 @@ public class Robot extends IterativeRobot {
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
 		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
 		
-		autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain));
+		autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain, elevator, intake));
 
 		autoModeRunner.start();
 		
@@ -144,29 +144,29 @@ public class Robot extends IterativeRobot {
 		else {
 			elevator.pivotUpdate();
 			if(joystick.dPad.getPOV() == 180) {
-				elevator.setPivotTarget(0);
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_BOTTOM);
 			}
 			else if(joystick.dPad.getPOV() == 270) {
-				elevator.setPivotTarget(-350);
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_SECOND);
 			}
 			else if(joystick.dPad.getPOV() == 90) {
-				elevator.setPivotTarget(-1100);
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_SWITCH);
 			}
 			else if(joystick.dPad.getPOV() == 0) {
-				elevator.setPivotTarget(-1500);
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_SCALE);
 			}
 			else if(joystick.START.isPressed()) {
-				elevator.setPivotTarget(-1800);
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_CLIMB);
 			}
 		}
 		
 		
 		
 		if(joystick.LB.isPressed()) {
-			intake.in(1);
+			intake.out(1);
 		}
 		else if(joystick.RB.isPressed()) {
-			intake.out(1);
+			intake.in(1);
 		}
 		else if(joystick.B.isPressed()) {
 			intake.spinLeft(1);
