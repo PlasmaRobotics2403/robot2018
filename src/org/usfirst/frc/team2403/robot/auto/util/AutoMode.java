@@ -3,6 +3,10 @@ package org.usfirst.frc.team2403.robot.auto.util;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public abstract class AutoMode {
+	public class CenterSwitch {
+
+	}
+
 	protected double updateRate = 1.0/50.0;
 	protected boolean isActive = false;
 	
@@ -71,6 +75,44 @@ public abstract class AutoMode {
 			}
 		}
 		action.end();
+		isActiveWithThrow();
+	}
+	
+	protected void runActionsParallel(Action action1, Action action2) throws AutoModeEndedException{
+		isActiveWithThrow();
+		boolean is1Running = true;
+		boolean is2Running = true;
+		action1.start();
+		action2.start();
+		long waitTime = (long)(updateRate * 1000.0);
+		while(isActive() && (is1Running || is2Running)) {
+			if(is1Running) {
+				if(action1.isFinished()) {
+					action1.end();
+					is1Running = false;
+				}
+				else {
+					action1.update();
+				}
+			}
+			if(is2Running) {
+				if(action2.isFinished()) {
+					action2.end();
+					is2Running = false;
+				}
+				else {
+					action2.update();
+				}
+			}
+			try{
+				Thread.sleep(waitTime);
+			}
+			catch(InterruptedException e){
+				stop();
+			}
+		}
+		action1.end();
+		action2.end();
 		isActiveWithThrow();
 	}
 	

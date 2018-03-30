@@ -20,8 +20,13 @@ public class FollowTrajectory implements Action {
 	EncoderFollower leftFollower;
 	EncoderFollower rightFollower;
 	
+	int i = 0;
+	
 	class PeriodicRunnable implements java.lang.Runnable{
 		public void run() {
+			if(leftFollower.isFinished() || rightFollower.isFinished()) {
+				return;
+			}
 			double l = leftFollower.calculate(drive.leftDrive.getSelectedSensorPosition(0));
 			double r = rightFollower.calculate(drive.rightDrive.getSelectedSensorPosition(0));
 			
@@ -58,7 +63,7 @@ public class FollowTrajectory implements Action {
 
 	@Override
 	public boolean isFinished() {
-		return leftFollower.isFinished();
+		return leftFollower.isFinished() || rightFollower.isFinished();
 	}
 	
 	@Override
@@ -80,7 +85,7 @@ public class FollowTrajectory implements Action {
 	public void update() {
 		SmartDashboard.putNumber("Left Error", drive.leftDrive.getClosedLoopError(0));
 		SmartDashboard.putNumber("Right Error", drive.rightDrive.getClosedLoopError(0));
-		SmartDashboard.putNumber("leftPosition Error", leftFollower.getSegment().position - (drive.leftDrive.getSelectedSensorPosition(0) * Constants.DRIVE_ENCODER_CONVERSION));
+		//SmartDashboard.putNumber("leftPosition Error", leftFollower.getSegment().position - (drive.leftDrive.getSelectedSensorPosition(0) * Constants.DRIVE_ENCODER_CONVERSION));
 	}
 
 	@Override
@@ -89,10 +94,12 @@ public class FollowTrajectory implements Action {
 		drive.leftDrive.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT);
 		drive.rightDrive.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT);
 		drive.zeroGyro();
+		followLoop.stop();
 		drive.leftDrive.set(ControlMode.PercentOutput, 0);
 		drive.rightDrive.set(ControlMode.PercentOutput, 0);
 		drive.leftDriveSlave.set(ControlMode.PercentOutput, 0);
 		drive.rightDriveSlave.set(ControlMode.PercentOutput, 0);
+		
 	}
 
 }

@@ -35,9 +35,9 @@ public class Constants {
 	public static final double LIFT_ENCODER_CONVERSION = 0.001433178;
 	public static final double PIVOT_ENCODER_CONVERSION = -0.0462249614;
 	public static final int PIVOT_POSITION_BOTTOM = 0;
-	public static final int PIVOT_POSITION_SECOND = -350;
-	public static final int PIVOT_POSITION_SWITCH = -1100;
-	public static final int PIVOT_POSITION_AUTO = -1380;
+	public static final int PIVOT_POSITION_SECOND = -290;
+	public static final int PIVOT_POSITION_SWITCH = -900;
+	public static final int PIVOT_POSITION_AUTO = -1180;
 	public static final int PIVOT_POSITION_SCALE = -1500;
 	public static final int PIVOT_POSITION_CLIMB = -1800;
 	

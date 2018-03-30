@@ -31,7 +31,7 @@ public class GenerateTrajectory implements Action {
 
 	@Override
 	public void start() {
-		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 100, 50, 80);
+		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, .01, 100, 80, 160);
 		
 		DriverStation.reportWarning("Starting Generation of Path: " + name, false);
 		Trajectory trajectory = Pathfinder.generate(waypoints, config);

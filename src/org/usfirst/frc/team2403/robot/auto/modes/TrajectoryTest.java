@@ -23,11 +23,15 @@ public class TrajectoryTest extends AutoMode {
 
 	@Override
 	protected void routine() throws AutoModeEndedException {
-		runAction(new PivotAngle(Constants.PIVOT_POSITION_SWITCH, elevator));
-		runAction(new MoveLift(20, elevator));
+	
+		runAction(new PivotAngle(Constants.PIVOT_POSITION_CLIMB, elevator));	
+		/*
+		runAction(new MoveLift(10, elevator));
 		runAction(new FollowTrajectory("Straight", drive));
 		runAction(new MoveLift(0, elevator));
 		runAction(new PivotAngle(Constants.PIVOT_POSITION_BOTTOM, elevator));
+		*/
+		
 		/*
 		runAction(new Clamp(intake, false));
 		runAction(new IntakeCube(1, true, intake));

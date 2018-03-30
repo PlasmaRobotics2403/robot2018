@@ -95,6 +95,7 @@ public class Robot extends IterativeRobot {
 		
 	@Override
 	public void autonomousInit() {
+		elevator.setPivotTarget(Constants.PIVOT_POSITION_AUTO);
 		driveTrain.resetEncoders();
 		compressor.start();
 		driveTrain.zeroGyro();
@@ -102,13 +103,13 @@ public class Robot extends IterativeRobot {
 		autoModes[0] = new CrossBaseline(driveTrain);
 		autoModes[1] = new SwitchRight(driveTrain, intake);
 		autoModes[2] = new SwitchLeft(driveTrain, intake);
-		autoModes[3] = new SwitchCenter(driveTrain, intake);
+		autoModes[3] = new SwitchCenter(driveTrain, intake, elevator);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
 		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
 		
-		autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain, elevator, intake));
+		autoModeRunner.chooseAutoMode(new SwitchCenter(driveTrain, intake, elevator));
 
 		autoModeRunner.start();
 		
@@ -143,7 +144,10 @@ public class Robot extends IterativeRobot {
 		}
 		else {
 			elevator.pivotUpdate();
-			if(joystick.dPad.getPOV() == 180) {
+			if(joystick.RT.isPressed() && joystick.START.isPressed()) {
+				elevator.setPivotTarget(Constants.PIVOT_POSITION_AUTO);
+			}
+			else if(joystick.dPad.getPOV() == 180) {
 				elevator.setPivotTarget(Constants.PIVOT_POSITION_BOTTOM);
 			}
 			else if(joystick.dPad.getPOV() == 270) {
