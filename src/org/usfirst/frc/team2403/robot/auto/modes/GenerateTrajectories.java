@@ -55,11 +55,19 @@ public class GenerateTrajectories extends AutoMode {
 				new Waypoint(75, 50, 0),
 		};
 		
-		runAction(new GenerateTrajectory(waypoints5, "SwitchCenterLeft1", false));
-		runAction(new GenerateTrajectory(waypoints6, "SwitchCenterLeft2", true));
-		runAction(new GenerateTrajectory(waypoints4, "SwitchCenterLeft3" , false));
-		runAction(new GenerateTrajectory(waypoints4, "SwitchCenterLeft4" , true));
-		runAction(new GenerateTrajectory(waypoints6, "SwitchCenterLeft5", false));	
+		runAction(new GenerateTrajectory(waypoints5, "CenterSwitchLeft1", false));
+		runAction(new GenerateTrajectory(waypoints6, "CenterSwitchLeft2", true));
+		runAction(new GenerateTrajectory(waypoints4, "CenterSwitchLeft3" , false));
+		runAction(new GenerateTrajectory(waypoints4, "CenterSwitchLeft4" , true));
+		runAction(new GenerateTrajectory(waypoints6, "CenterSwitchLeft5", false));
+		
+		Waypoint waypoint7[] = new Waypoint[] {
+				new Waypoint(0,0,0),
+				new Waypoint(196, 0, 0),
+				new Waypoint(288, -70, 0),
+		};
+		
+		runAction(new GenerateTrajectory(waypoint7, "LeftScaleLeft1", false));
 		
 		DriverStation.reportWarning("All Generation ended", false);
 	}

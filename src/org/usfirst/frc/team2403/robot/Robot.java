@@ -101,15 +101,15 @@ public class Robot extends IterativeRobot {
 		driveTrain.zeroGyro();
 		
 		autoModes[0] = new CrossBaseline(driveTrain);
-		autoModes[1] = new SwitchRight(driveTrain, intake);
-		autoModes[2] = new SwitchLeft(driveTrain, intake);
-		autoModes[3] = new SwitchCenter(driveTrain, intake, elevator);
+		autoModes[1] = new RightSwitch(driveTrain, intake);
+		autoModes[2] = new LeftSwitch(driveTrain, intake);
+		autoModes[3] = new CenterSwitch(driveTrain, intake, elevator);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
 		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
 		
-		autoModeRunner.chooseAutoMode(new SwitchCenter(driveTrain, intake, elevator));
+		autoModeRunner.chooseAutoMode(new LeftScale(driveTrain, intake));
 
 		autoModeRunner.start();
 		
