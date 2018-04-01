@@ -52,8 +52,8 @@ public class FollowTrajectory implements Action {
 		this.drive = drive;
 		this.followLoop = new Notifier(new PeriodicRunnable());
 		
-		File leftFile = new File("/home/lvuser/" + name + "Left");
-		File rightFile = new File("/home/lvuser/" + name + "Right");
+		File leftFile = new File("/media/sda1/" + name + "Left");
+		File rightFile = new File("/media/sda1/" + name + "Right");
 		Trajectory left = Pathfinder.readFromFile(leftFile);
 		Trajectory right = Pathfinder.readFromFile(rightFile);
 

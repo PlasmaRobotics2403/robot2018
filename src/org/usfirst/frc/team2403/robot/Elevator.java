@@ -213,7 +213,7 @@ public class Elevator {
 			leftLift.setSelectedSensorPosition(0, 0, 0);
 		}
 		
-		else if(speed > 0 && getLiftLimit(getPivotAngle()) + .5 < getLiftDistance()) {
+		else if(speed > 0 && (getLiftLimit(getPivotAngle()) + .5 < getLiftDistance() || getLiftLimit(pivotPosToAngle(pivotTarget)) + .5 < getLiftDistance())) {
 			liftSpeed = 0;
 			activateLiftBrake();
 		}

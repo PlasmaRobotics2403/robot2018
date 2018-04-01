@@ -24,7 +24,8 @@ public class TrajectoryTest extends AutoMode {
 	@Override
 	protected void routine() throws AutoModeEndedException {
 	
-		runAction(new PivotAngle(Constants.PIVOT_POSITION_CLIMB, elevator));	
+		//runAction(new FollowTrajectory("left", drive));	
+		runAction(new FollowTrajectory("allRight", drive));	
 		/*
 		runAction(new MoveLift(10, elevator));
 		runAction(new FollowTrajectory("Straight", drive));

@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends IterativeRobot {
 	
@@ -62,7 +63,7 @@ public class Robot extends IterativeRobot {
 		compressor.setClosedLoopControl(true);
 		
 		autoModeRunner = new AutoModeRunner();
-		autoModes = new AutoMode[4];
+		autoModes = new AutoMode[20];
 		for(int i = 0; i < autoModes.length; i++){
 			autoModes[i] = new Nothing();
 		}
@@ -70,11 +71,10 @@ public class Robot extends IterativeRobot {
 		autoModeSelection = 0;
 		SmartDashboard.putNumber("Auto Mode", 0);
 		
-		//m_chooser.addDefault("Default Auto", kDefaultAuto);
-		//m_chooser.addObject("My Auto", kCustomAuto);
-		//SmartDashboard.putData("Auto choices", m_chooser);
-		
 		driveTrain.resetEncoders();
+		
+		CameraServer.getInstance().startAutomaticCapture().setResolution(320, 240);
+		//Troy loves cameras
 	}
 	
 	public void robotPeriodic() {
@@ -104,12 +104,13 @@ public class Robot extends IterativeRobot {
 		autoModes[1] = new RightSwitch(driveTrain, intake);
 		autoModes[2] = new LeftSwitch(driveTrain, intake);
 		autoModes[3] = new CenterSwitch(driveTrain, intake, elevator);
+		autoModes[4] = new LeftScale(driveTrain, intake);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
 		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
 		
-		autoModeRunner.chooseAutoMode(new LeftScale(driveTrain, intake));
+		//autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain, elevator, intake));
 
 		autoModeRunner.start();
 		
@@ -207,9 +208,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testInit() {
 		driveTrain.FPSDrive(0, 0);
-		autoModeRunner.chooseAutoMode(new GenerateTrajectories());
-
-		autoModeRunner.start();
 	}
 	
 	@Override
