@@ -8,6 +8,7 @@ import org.usfirst.frc.team2403.robot.auto.util.Action;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.*;
@@ -54,9 +55,10 @@ public class FollowTrajectory implements Action {
 		
 		File leftFile = new File("/media/sda1/" + name + "Left");
 		File rightFile = new File("/media/sda1/" + name + "Right");
+		DriverStation.reportError(" " + leftFile, false);
 		Trajectory left = Pathfinder.readFromFile(leftFile);
 		Trajectory right = Pathfinder.readFromFile(rightFile);
-
+		DriverStation.reportError("base" + left, false);
 		leftFollower = new EncoderFollower(left);
 		rightFollower = new EncoderFollower(right);
 	}
@@ -68,6 +70,7 @@ public class FollowTrajectory implements Action {
 	
 	@Override
 	public void start() {
+		
 		drive.leftDrive.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT);
 		drive.rightDrive.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT);
 		drive.zeroGyro();

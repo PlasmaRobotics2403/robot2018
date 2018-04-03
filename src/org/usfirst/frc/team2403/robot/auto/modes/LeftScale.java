@@ -3,10 +3,7 @@ package org.usfirst.frc.team2403.robot.auto.modes;
 
 import org.usfirst.frc.team2403.robot.DriveTrain;
 import org.usfirst.frc.team2403.robot.Intake;
-import org.usfirst.frc.team2403.robot.auto.actions.DriveStraight;
 import org.usfirst.frc.team2403.robot.auto.actions.FollowTrajectory;
-import org.usfirst.frc.team2403.robot.auto.actions.IntakeCube;
-import org.usfirst.frc.team2403.robot.auto.actions.TurnAngle;
 import org.usfirst.frc.team2403.robot.auto.util.AutoMode;
 import org.usfirst.frc.team2403.robot.auto.util.AutoModeEndedException;
 
@@ -28,6 +25,7 @@ public class LeftScale extends AutoMode{
 	
 	@Override
 	protected void routine() throws AutoModeEndedException {
+		DriverStation.reportWarning("running scale", false);
 		if(gameData.charAt(0) == 'L') {
 			runAction(new FollowTrajectory("LeftScaleLeft1", drive));
 		}

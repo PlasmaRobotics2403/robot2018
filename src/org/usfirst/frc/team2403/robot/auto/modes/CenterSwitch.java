@@ -35,16 +35,16 @@ public class CenterSwitch extends AutoMode{
 	protected void routine() throws AutoModeEndedException {		
 		if(gameData.charAt(0) == 'R') {
 			runAction(new Clamp(intake, true));
-			runAction(new FollowTrajectory("SwitchCenterRight1", drive));
+			runAction(new FollowTrajectory("CenterSwitchRight1", drive));
 			runAction(new IntakeCube(.7, false, intake));
-			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_BOTTOM, elevator), new FollowTrajectory("SwitchCenterRight2", drive));
+			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_BOTTOM, elevator), new FollowTrajectory("CenterSwitchRight2", drive));
 			runAction(new IntakeCube(.8, true, intake));
 			runAction(new Clamp(intake, false));
-			runAction(new FollowTrajectory("SwitchCenterRight3", drive));
+			runAction(new FollowTrajectory("CenterSwitchRight3", drive));
 			runAction(new Clamp(intake, true));
 			runAction(new IntakeCube(0, true, intake));
-			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_SWITCH, elevator), new FollowTrajectory("SwitchCenterRight4", drive));
-			runAction(new FollowTrajectory("SwitchCenterRight5", drive));
+			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_SWITCH, elevator), new FollowTrajectory("CenterSwitchRight4", drive));
+			runAction(new FollowTrajectory("CenterSwitchRight5", drive));
 			runAction(new IntakeCube(.6, false, intake));
 			runAction(new Wait(1));
 			runAction(new IntakeCube(0, true, intake));
