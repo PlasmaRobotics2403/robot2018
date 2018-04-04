@@ -32,10 +32,10 @@ public class MoveLift implements Action {
 	@Override
 	public void update() {
 		if(position > elevator.getLiftDistance()) {
-			elevator.elevatorLift(.7);
+			elevator.elevatorLift(.8);
 		}
 		else {
-			elevator.elevatorLift(-.7);
+			elevator.elevatorLift(-.8);
 		}
 	}
 

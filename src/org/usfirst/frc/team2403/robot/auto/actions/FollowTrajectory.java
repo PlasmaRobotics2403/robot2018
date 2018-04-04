@@ -35,7 +35,7 @@ public class FollowTrajectory implements Action {
 			double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
 			
 			double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading);
-			double turn = .25 * angleDifference;
+			double turn = .28 * angleDifference;
 			
 			SmartDashboard.putNumber("angleDiff", angleDifference);
 			
@@ -55,7 +55,7 @@ public class FollowTrajectory implements Action {
 		
 		File leftFile = new File("/media/sda1/" + name + "Left");
 		File rightFile = new File("/media/sda1/" + name + "Right");
-		DriverStation.reportError(" " + leftFile, false);
+		DriverStation.reportError("LeftFile: " + leftFile, false);
 		Trajectory left = Pathfinder.readFromFile(leftFile);
 		Trajectory right = Pathfinder.readFromFile(rightFile);
 		DriverStation.reportError("base" + left, false);

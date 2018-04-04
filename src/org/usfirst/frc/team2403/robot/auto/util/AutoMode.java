@@ -3,9 +3,6 @@ package org.usfirst.frc.team2403.robot.auto.util;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public abstract class AutoMode {
-	public class CenterSwitch {
-
-	}
 
 	protected double updateRate = 1.0/50.0;
 	protected boolean isActive = false;

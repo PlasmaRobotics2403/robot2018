@@ -38,14 +38,14 @@ public class CenterSwitch extends AutoMode{
 			runAction(new FollowTrajectory("CenterSwitchRight1", drive));
 			runAction(new IntakeCube(.7, false, intake));
 			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_BOTTOM, elevator), new FollowTrajectory("CenterSwitchRight2", drive));
-			runAction(new IntakeCube(.8, true, intake));
+			runAction(new IntakeCube(.7, true, intake));
 			runAction(new Clamp(intake, false));
 			runAction(new FollowTrajectory("CenterSwitchRight3", drive));
 			runAction(new Clamp(intake, true));
 			runAction(new IntakeCube(0, true, intake));
 			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_SWITCH, elevator), new FollowTrajectory("CenterSwitchRight4", drive));
 			runAction(new FollowTrajectory("CenterSwitchRight5", drive));
-			runAction(new IntakeCube(.6, false, intake));
+			runAction(new IntakeCube(.7, false, intake));
 			runAction(new Wait(1));
 			runAction(new IntakeCube(0, true, intake));
 		} 
@@ -54,14 +54,14 @@ public class CenterSwitch extends AutoMode{
 			runAction(new FollowTrajectory("CenterSwitchLeft1", drive));
 			runAction(new IntakeCube(.7, false, intake));
 			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_BOTTOM, elevator), new FollowTrajectory("CenterSwitchLeft2", drive));
-			runAction(new IntakeCube(.8, true, intake));
+			runAction(new IntakeCube(.7, true, intake));
 			runAction(new Clamp(intake, false));
 			runAction(new FollowTrajectory("CenterSwitchLeft3", drive));
 			runAction(new Clamp(intake, true));
 			runAction(new IntakeCube(0, true, intake));
 			runActionsParallel(new PivotAngle(Constants.PIVOT_POSITION_SWITCH, elevator), new FollowTrajectory("CenterSwitchLeft4", drive));
 			runAction(new FollowTrajectory("CenterSwitchLeft5", drive));
-			runAction(new IntakeCube(.6, false, intake));
+			runAction(new IntakeCube(.7, false, intake));
 			runAction(new Wait(1));
 			runAction(new IntakeCube(0, true, intake));
 		}

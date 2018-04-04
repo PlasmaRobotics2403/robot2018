@@ -103,7 +103,8 @@ public class Robot extends IterativeRobot {
 		autoModes[1] = new RightSwitch(driveTrain, intake);
 		autoModes[2] = new LeftSwitch(driveTrain, intake);
 		autoModes[3] = new CenterSwitch(driveTrain, intake, elevator);
-		autoModes[4] = new LeftScale(driveTrain, intake);
+		autoModes[4] = new LeftScale(driveTrain, intake, elevator);
+		autoModes[5] = new RightScale(driveTrain, intake, elevator);
 		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
