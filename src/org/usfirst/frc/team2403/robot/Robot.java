@@ -12,6 +12,7 @@ import org.usfirst.frc.team2403.robot.auto.modes.*;
 import org.usfirst.frc.team2403.robot.auto.util.*;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -106,9 +107,13 @@ public class Robot extends IterativeRobot {
 		autoModes[4] = new LeftScale(driveTrain, intake, elevator);
 		autoModes[5] = new RightScale(driveTrain, intake, elevator);
 		
+		
 		autoModeSelection = (autoModeSelection >= autoModes.length) ? 0 : autoModeSelection;
 		autoModeSelection = (autoModeSelection < 0) ? 0 : autoModeSelection;
-		autoModeRunner.chooseAutoMode(autoModes[autoModeSelection]);
+		if(autoModeSelection == 1) {
+			DriverStation.reportWarning("auto mode selection works", false);
+		}
+		autoModeRunner.chooseAutoMode(autoModes[3]); //autoModes[autoModeSelection]);
 		
 		//autoModeRunner.chooseAutoMode(new TrajectoryTest(driveTrain, elevator, intake));
 
@@ -131,8 +136,16 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		try
+		{
 		driver1Controls();
 		driveTrain.getDistance();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			DriverStation.reportError(e.getMessage(), true);
+		}
 	}
 
 	
@@ -141,7 +154,7 @@ public class Robot extends IterativeRobot {
 		driveTrain.FPSDrive(joystick.LeftY, joystick.RightX);
 		if(joystick.BACK.isToggled()) {
 			elevator.pivotRotate(joystick.RT, joystick.LT);
-			elevator.setPivotTarget(0);
+			elevator.setPivotTarget(Constants.PIVOT_POSITION_CLIMB);
 		}
 		else {
 			elevator.pivotUpdate();

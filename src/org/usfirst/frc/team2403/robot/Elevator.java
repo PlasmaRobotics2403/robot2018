@@ -148,6 +148,7 @@ public class Elevator {
 			leftPivot.setSelectedSensorPosition(0, 0, 0);
 		}
 		if(pivotTarget == 0 && leftPivot.getSelectedSensorPosition(0) > -20 && pivotLimit.get()) {
+			releasePivotBrake();
 			rightPivot.set(ControlMode.Follower, leftPivot.getDeviceID());
 			leftPivot.set(ControlMode.PercentOutput, .2);
 		}
@@ -213,7 +214,7 @@ public class Elevator {
 			leftLift.setSelectedSensorPosition(0, 0, 0);
 		}
 		
-		else if(speed > 0 && (getLiftLimit(getPivotAngle()) + .5 < getLiftDistance() || getLiftLimit(pivotPosToAngle(pivotTarget)) + .5 < getLiftDistance())) {
+		else if(speed > 0 && getLiftLimit(pivotPosToAngle(pivotTarget)) + .5 < getLiftDistance()) {   // || (getLiftLimit(getPivotAngle()) + .5 < getLiftDistance()) {
 			liftSpeed = 0;
 			activateLiftBrake();
 		}

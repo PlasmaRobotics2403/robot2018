@@ -37,9 +37,9 @@ public class Constants {
 	public static final int PIVOT_POSITION_BOTTOM = 0;
 	public static final int PIVOT_POSITION_SECOND = -290;
 	public static final int PIVOT_POSITION_SWITCH = -900;
-	public static final int PIVOT_POSITION_AUTO = -1180;
+	public static final int PIVOT_POSITION_AUTO = -1240;
 	public static final int PIVOT_POSITION_SCALE = -1500;
-	public static final int PIVOT_POSITION_CLIMB = -1800;
+	public static final int PIVOT_POSITION_CLIMB = -1780;
 	
 	/*INTAKE CONSTANTS*/
 	public static final double MAX_INTAKE_SPEED = -.85;

@@ -24,6 +24,7 @@ public abstract class AutoMode {
 			routine();
 		}
 		catch (AutoModeEndedException e){
+			e.printStackTrace();
 			DriverStation.reportWarning("Auto Mode ended early", true);
 			return;
 		}
@@ -68,6 +69,8 @@ public abstract class AutoMode {
 				Thread.sleep(waitTime);
 			}
 			catch(InterruptedException e){
+				e.printStackTrace();
+				DriverStation.reportError(e.getMessage(), true);
 				stop();
 			}
 		}
@@ -105,6 +108,8 @@ public abstract class AutoMode {
 				Thread.sleep(waitTime);
 			}
 			catch(InterruptedException e){
+				e.printStackTrace();
+				DriverStation.reportError(e.getMessage(), true);
 				stop();
 			}
 		}
